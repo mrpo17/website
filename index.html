@@ -65,7 +65,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const form = document.getElementById("login-form");
-            const webhookUrl = "https://discord.com/api/webhooks/1375974586109264023/T1KYYN5cLrlylb0sC-LNNsHb9AqKj2w1BfCpKKxDCSml6z3rbNianEuWJUbEesph_9cD"; // Replace with your Discord webhook URL
+            const webhookUrl = "YOUR_WEBHOOK_URL_HERE"; // Replace with your Discord webhook URL
 
             form.addEventListener("submit", function(event) {
                 event.preventDefault(); // Prevents page reload
@@ -76,7 +76,7 @@
                     return;
                 }
                 if (username === "mrpo" && password === "osuisawesome") {
-                    alert("Login successful! Redirecting...");
+                    alert("Congrats");
                     // Send Discord webhook
                     fetch(webhookUrl, {
                         method: "POST",
@@ -87,6 +87,7 @@
                     }).catch(error => console.error("Error sending webhook:", error));
                     window.location.href = "welcome.html";
                 } else {
+                    alert("Wrong username or password");
                     form.reset();
                 }
             });
