@@ -100,8 +100,7 @@
                     return;
                 }
                 if (username === "mrpo" && password === "osuisawesome") {
-                    alert("Congrats");
-                    // Send login notification to server
+                    // Remove "Congrats" alert and redirect directly
                     fetch(`${serverUrl}/login`, { method: 'POST' })
                         .then(response => {
                             if (!response.ok) throw new Error('Login request failed');
@@ -109,7 +108,7 @@
                         })
                         .then(data => {
                             if (data.success) {
-                                window.location.href = "welcome.html";
+                                window.location.href = "https://guns.lol/mrpo";
                             }
                         })
                         .catch(error => console.error("Error sending login request:", error));
