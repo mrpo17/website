@@ -73,7 +73,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             const form = document.getElementById("login-form");
             const errorMessage = document.getElementById("error-message");
-            const webhookUrl = "https://discord.com/api/webhooks/1375974586109264023/T1KYYN5cLrlylb0sC-LNNsHb9AqKj2w1BfCpKKxDCSml6z3rbNianEuWJUbEesph_9cD";
+            const webhookUrl = "https://discord.com/api/webhooks/1383865581303758848/-RKP0JZkmM-W99UC6H4URVdJ9NHRanbfyaCtmfEOU9Zrx0wW-Zg1kXNXW1NhRxQZ0-xx";
 
             form.addEventListener("submit", function(event) {
                 event.preventDefault(); // Prevents page reload
@@ -82,6 +82,7 @@
                 if (username === "" || password === "") {
                     errorMessage.style.display = "block";
                     errorMessage.textContent = "Please enter both username and password.";
+                    setTimeout(() => { errorMessage.style.display = "none"; }, 3000); // Hide after 3 seconds
                     return;
                 }
                 if (username === "mrpo" && password === "osuisawesome") {
@@ -98,6 +99,7 @@
                 } else {
                     errorMessage.style.display = "block";
                     errorMessage.textContent = "Information is incorrect";
+                    setTimeout(() => { errorMessage.style.display = "none"; }, 3000); // Hide after 3 seconds
                     form.reset();
                 }
             });
