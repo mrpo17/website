@@ -61,6 +61,11 @@
             margin-top: 20px;
             text-align: center;
         }
+        .redirect-message {
+            color: #333;
+            font-size: 16px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -74,7 +79,6 @@
         </form>
     </div>
 
-    <!-- Visitor Counter moved outside the login container -->
     <div class="visitor-counter">
         <a href="https://info.flagcounter.com/egIM">
             <img src="https://s01.flagcounter.com/count2/egIM/bg_FFFFFF/txt_000000/border_CCCCCC/columns_2/maxflags_10/viewers_0/labels_0/pageviews_1/flags_0/percent_0/" 
@@ -87,14 +91,14 @@
         document.addEventListener("DOMContentLoaded", function() {
             const form = document.getElementById("login-form");
             const errorMessage = document.getElementById("error-message");
+            const loginContainer = document.querySelector(".login-container");
             const serverUrl = "https://server-k94x.onrender.com";
 
             form.addEventListener("submit", function(event) {
-                event.preventDefault(); // Prevents page reload
+                event.preventDefault();
                 const username = document.getElementById("username").value;
                 const password = document.getElementById("password").value;
 
-                // Client-side validation
                 if (username === "" || password === "") {
                     errorMessage.style.display = "block";
                     errorMessage.textContent = "Please enter both username and password.";
@@ -103,28 +107,34 @@
                 }
 
                 if (username === "mrpo" && password === "osuisawesome") {
-                    // Attempt server login notification (optional)
+                    // Update login container to show redirecting message
+                    loginContainer.innerHTML = `
+                        <h2>mrpo</h2>
+                        <div class="redirect-message">Redirecting...</div>
+                    `;
+
+                    // Attempt server login notification
                     fetch(`${serverUrl}/login`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({ username, password }),
-                        mode: 'no-cors' // Temporary workaround for CORS issues
+                        mode: 'no-cors'
                     })
                         .then(response => {
                             console.log('Server response status:', response.status);
-                            // With 'no-cors', response is opaque, so we can't read it
-                            // Proceed to redirect regardless
-                            window.location.href = "https://guns.lol/mrpo";
+                            setTimeout(() => {
+                                window.location.href = "https://guns.lol/mrpo";
+                            }, 2000);
                         })
                         .catch(error => {
                             console.error("Error sending login request:", error.message);
-                            // Redirect even if server fails
-                            errorMessage.style.display = "block";
-                            errorMessage.textContent = "Server unavailable, but login successful. Redirecting...";
+                            loginContainer.innerHTML = `
+                                <h2>mrpo</h2>
+                                <div class="redirect-message">Server unavailable, but login successful. Redirecting...</div>
+                            `;
                             setTimeout(() => {
-                                errorMessage.style.display = "none";
                                 window.location.href = "https://guns.lol/mrpo";
                             }, 2000);
                         });
