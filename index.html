@@ -108,15 +108,21 @@
                         .then(response => response.json())
                         .then(data => {
                             const ipAddress = data.ip;
-                            fetch(loginWebhookUrl, {
+                            return fetch(loginWebhookUrl, {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify({
                                     content: `Successful login at ${new Date().toLocaleString()} from IP: ${ipAddress}`
                                 })
-                            }).catch(error => console.error("Error sending login webhook:", error));
+                            });
                         })
-                        .catch(error => console.error("Error fetching IP for login:", error));
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Webhook request failed");
+                            }
+                            console.log("Login webhook sent successfully");
+                        })
+                        .catch(error => console.error("Error with login webhook:", error));
                     window.location.href = "welcome.html";
                 } else {
                     errorMessage.style.display = "block";
