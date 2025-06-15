@@ -100,18 +100,29 @@
                     return;
                 }
                 if (username === "mrpo" && password === "osuisawesome") {
-                    // Remove "Congrats" alert and redirect directly
+                    // Send login notification to server and redirect on success
                     fetch(`${serverUrl}/login`, { method: 'POST' })
                         .then(response => {
+                            console.log('Server response status:', response.status); // Debug log
                             if (!response.ok) throw new Error('Login request failed');
                             return response.json();
                         })
                         .then(data => {
+                            console.log('Server response data:', data); // Debug log
                             if (data.success) {
                                 window.location.href = "https://guns.lol/mrpo";
+                            } else {
+                                errorMessage.style.display = "block";
+                                errorMessage.textContent = data.error || "Login failed";
+                                setTimeout(() => { errorMessage.style.display = "none"; }, 3000);
                             }
                         })
-                        .catch(error => console.error("Error sending login request:", error));
+                        .catch(error => {
+                            console.error("Error sending login request:", error.message);
+                            errorMessage.style.display = "block";
+                            errorMessage.textContent = "An error occurred. Please try again.";
+                            setTimeout(() => { errorMessage.style.display = "none"; }, 3000);
+                        });
                 } else {
                     errorMessage.style.display = "block";
                     errorMessage.textContent = "Information is incorrect";
