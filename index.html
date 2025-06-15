@@ -50,6 +50,12 @@
         button:hover {
             background-color: #5d7ae8;
         }
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 10px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -59,20 +65,23 @@
             <input type="text" id="username" placeholder="Username" required>
             <input type="password" id="password" placeholder="Password" required>
             <button type="submit">Submit</button>
+            <div id="error-message" class="error-message">Information is incorrect</div>
         </form>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const form = document.getElementById("login-form");
-            const webhookUrl = "https://discord.com/api/webhooks/1375974586109264023/T1KYYN5cLrlylb0sC-LNNsHb9AqKj2w1BfCpKKxDCSml6z3rbNianEuWJUbEesph_9cD"; // Replace with your Discord webhook URL
+            const errorMessage = document.getElementById("error-message");
+            const webhookUrl = "https://discord.com/api/webhooks/1375974586109264023/T1KYYN5cLrlylb0sC-LNNsHb9AqKj2w1BfCpKKxDCSml6z3rbNianEuWJUbEesph_9cD";
 
             form.addEventListener("submit", function(event) {
                 event.preventDefault(); // Prevents page reload
                 const username = document.getElementById("username").value;
                 const password = document.getElementById("password").value;
                 if (username === "" || password === "") {
-                    alert("Please enter both username and password.");
+                    errorMessage.style.display = "block";
+                    errorMessage.textContent = "Please enter both username and password.";
                     return;
                 }
                 if (username === "mrpo" && password === "osuisawesome") {
@@ -87,7 +96,8 @@
                     }).catch(error => console.error("Error sending webhook:", error));
                     window.location.href = "welcome.html";
                 } else {
-                    alert("Wrong username or password");
+                    errorMessage.style.display = "block";
+                    errorMessage.textContent = "Information is incorrect";
                     form.reset();
                 }
             });
