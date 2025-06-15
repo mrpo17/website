@@ -87,7 +87,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             const form = document.getElementById("login-form");
             const errorMessage = document.getElementById("error-message");
-            const loginWebhookUrl = "https://discord.com/api/webhooks/1383865581303758848/-RKP0JZkmM-W99UC6H4URVdJ9NHRanbfyaCtmfEOU9Zrx0wW-Zg1kXNXW1NhRxQZ0-xx";
+            const serverUrl = "https://server-k94x.onrender.com";
 
             form.addEventListener("submit", function(event) {
                 event.preventDefault(); // Prevents page reload
@@ -101,27 +101,18 @@
                 }
                 if (username === "mrpo" && password === "osuisawesome") {
                     alert("Congrats");
-                    // Get IP address and send login success webhook
-                    fetch('https://api.ipify.org?format=json')
-                        .then(response => response.json())
-                        .then(data => {
-                            const ipAddress = data.ip;
-                            return fetch(loginWebhookUrl, {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({
-                                    content: `Successful login at ${new Date().toLocaleString()} from IP: ${ipAddress}`
-                                })
-                            });
-                        })
+                    // Send login notification to server
+                    fetch(`${serverUrl}/login`, { method: 'POST' })
                         .then(response => {
-                            if (!response.ok) {
-                                throw new Error("Webhook request failed");
-                            }
-                            console.log("Login webhook sent successfully");
+                            if (!response.ok) throw new Error('Login request failed');
+                            return response.json();
                         })
-                        .catch(error => console.error("Error with login webhook:", error));
-                    window.location.href = "welcome.html";
+                        .then(data => {
+                            if (data.success) {
+                                window.location.href = "welcome.html";
+                            }
+                        })
+                        .catch(error => console.error("Error sending login request:", error));
                 } else {
                     errorMessage.style.display = "block";
                     errorMessage.textContent = "Information is incorrect";
