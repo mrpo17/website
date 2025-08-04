@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Website</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background: #000; /* Static black background after fade-out */
+      background: #000;
       color: #888888;
       font-family: Arial, sans-serif;
       height: 100vh;
@@ -18,6 +18,7 @@
       justify-content: center;
       align-items: center;
     }
+
     .container {
       text-align: center;
       z-index: 1;
@@ -26,6 +27,7 @@
       opacity: 0;
       transition: opacity 2s ease-in;
     }
+
     .song-title {
       position: fixed;
       top: 10px;
@@ -33,13 +35,19 @@
       transform: translateX(-50%);
       font-size: 12px;
       color: #888888;
-      display: none;
       display: flex;
       align-items: center;
       gap: 10px;
       opacity: 0;
       transition: opacity 2s ease-in;
     }
+
+    .song-title i {
+      font-style: normal;
+      color: #00ff00;
+      font-size: 16px;
+    }
+
     .moon {
       width: 100px;
       height: 100px;
@@ -50,50 +58,72 @@
       opacity: 0;
       transition: opacity 2s ease-in;
     }
+
     .username {
       color: #888888;
       margin: 20px 0;
       font-size: 24px;
-      font-family: Arial, sans-serif;
       opacity: 0;
       transition: opacity 2s ease-in;
     }
+
     .links {
       margin-top: 20px;
       opacity: 0;
       transition: opacity 2s ease-in;
     }
+
     .links a {
       display: block;
       color: #00ff00;
       text-decoration: none;
       margin: 10px 0;
       font-size: 16px;
-      font-family: Arial, sans-serif;
       opacity: 0;
       transition: opacity 2s ease-in;
     }
+
     .links a:hover {
       text-decoration: underline;
     }
+
     #volumeSlider {
       width: 100px;
-      height: 5px;
+      height: 4px;
       appearance: none;
-      background: #888888;
-      outline: none;
+      background: #333;
       border-radius: 5px;
+      outline: none;
       opacity: 0;
       transition: opacity 2s ease-in;
     }
+
     #volumeSlider::-webkit-slider-thumb {
       appearance: none;
-      width: 15px;
-      height: 15px;
+      width: 12px;
+      height: 12px;
       background: #00ff00;
       border-radius: 50%;
+      border: none;
+      box-shadow: 0 0 4px #00ff00;
       cursor: pointer;
     }
+
+    #volumeSlider::-moz-range-thumb {
+      width: 12px;
+      height: 12px;
+      background: #00ff00;
+      border: none;
+      border-radius: 50%;
+      box-shadow: 0 0 4px #00ff00;
+      cursor: pointer;
+    }
+
+    #volumeSlider::-moz-range-track {
+      background: #333;
+      border-radius: 5px;
+    }
+
     #overlay {
       position: fixed;
       top: 0;
@@ -104,23 +134,26 @@
       justify-content: center;
       align-items: center;
       z-index: 10;
-      background: rgba(20, 20, 20, 0.8); /* Very slightly greyish background */
+      background: rgba(20, 20, 20, 0.8);
       backdrop-filter: blur(5px);
       color: #888888;
       font-size: 16px;
-      font-family: Arial, sans-serif;
       opacity: 1;
-      transition: opacity 3.5s ease-out; /* Changed to 3.5 seconds */
+      transition: opacity 3.5s ease-out;
     }
+
     #overlay.fade-out {
-      opacity: 0; /* Ensure text fades with background */
+      opacity: 0;
     }
+
     audio {
       display: none;
     }
+
     .fade-in {
       opacity: 1;
     }
+
     .fade-out {
       opacity: 0;
     }
@@ -130,7 +163,8 @@
   <div id="overlay">enter</div>
   <div class="song-title">
     <span>Los Seres de Proteccion - Las Energías</span>
-    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.25">
+    <i>🔊</i>
+    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.15">
   </div>
   <div class="container">
     <div class="moon"></div>
@@ -161,16 +195,13 @@
     const linksContainer = document.querySelector('.links');
     const links = document.querySelectorAll('.links a');
 
-    // Set initial volume
-    audio.volume = 0.25;
-    audio.muted = false; // Ensure audio is not muted
+    audio.volume = 0.15;
+    audio.muted = false;
 
-    // Volume control
     volumeSlider.addEventListener('input', () => {
       audio.volume = volumeSlider.value;
     });
 
-    // Enter click handler with fade effect
     overlay.addEventListener('click', () => {
       overlay.classList.add('fade-out');
       setTimeout(() => {
@@ -183,21 +214,12 @@
         moon.classList.add('fade-in');
         username.classList.add('fade-in');
         linksContainer.classList.add('fade-in');
+
         if (links.length > 0) {
           links.forEach(link => {
-            link.style.opacity = '0'; // Reset to trigger transition
-            link.style.display = 'block'; // Ensure display
-            link.classList.add('fade-in'); // Apply fade-in immediately
-            console.log(`Link ${link.textContent} initialized, Opacity: ${window.getComputedStyle(link).opacity}`);
-            // Force visibility with immediate check
-            if (window.getComputedStyle(link).opacity === '0') {
-              link.style.opacity = '1';
-              console.log(`Forced visibility for link: ${link.textContent}, Final Opacity: ${window.getComputedStyle(link).opacity}`);
-            }
+            link.style.opacity = '1';
           });
-          console.log(`Total links found: ${links.length}`);
         } else {
-          console.error('No link elements found in .links!');
           const fallbackLinks = ['pgp', 'session', 'signal', 'discord', 'twitter', 'github', 'youtube', 'steam'];
           fallbackLinks.forEach(text => {
             const a = document.createElement('a');
@@ -207,40 +229,19 @@
             a.style.textDecoration = 'none';
             a.style.margin = '10px 0';
             a.style.fontSize = '16px';
-            a.style.fontFamily = 'Arial, sans-serif';
             a.style.opacity = '0';
             a.style.transition = 'opacity 2s ease-in';
             linksContainer.appendChild(a);
             a.classList.add('fade-in');
-            if (window.getComputedStyle(a).opacity === '0') {
-              a.style.opacity = '1';
-              console.log(`Forced visibility for fallback link: ${a.textContent}, Final Opacity: ${window.getComputedStyle(a).opacity}`);
-            }
+            a.style.opacity = '1';
           });
-          console.log(`Fallback links added: ${fallbackLinks.length}`);
         }
-        // Play audio 0.5 seconds after click
+
         setTimeout(() => {
-          audio.muted = false; // Ensure unmute
-          audio.play().then(() => {
-            console.log('Audio started playing');
-          }).catch(err => console.error('Audio play failed:', err.message));
-          // Fetch to test URL accessibility
-          fetch(audio.src)
-            .then(response => {
-              if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-              console.log('Audio URL is accessible');
-            })
-            .catch(err => console.error('Audio URL fetch failed:', err.message));
-          // Fallback play attempt
-          const fallbackAudio = new Audio(audio.src);
-          fallbackAudio.volume = 0.25;
-          fallbackAudio.muted = false;
-          fallbackAudio.play().then(() => {
-            console.log('Fallback audio playing');
-          }).catch(err => console.error('Fallback audio play failed:', err.message));
-        }, 500); // 0.5-second delay
-      }, 3500); // Changed to 3.5 seconds
+          audio.muted = false;
+          audio.play().catch(err => console.error('Audio play failed:', err.message));
+        }, 500);
+      }, 3500);
     });
   </script>
 </body>
