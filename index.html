@@ -54,7 +54,7 @@
     #volumeSlider {
       width: 100px;
       height: 4px;
-      background: #fff;
+      background: #222; /* Dark track */
       border-radius: 5px;
       outline: none;
       appearance: none;
@@ -62,7 +62,7 @@
       transition: opacity 2s ease-in;
     }
 
-    /* Webkit (Chrome, Safari) */
+    /* Chrome, Safari */
     #volumeSlider::-webkit-slider-thumb {
       appearance: none;
       width: 10px;
@@ -70,6 +70,7 @@
       background: #fff;
       border-radius: 50%;
       cursor: pointer;
+      border: none;
     }
 
     /* Firefox */
@@ -79,6 +80,12 @@
       background: #fff;
       border-radius: 50%;
       cursor: pointer;
+      border: none;
+    }
+
+    #volumeSlider::-moz-range-track {
+      background: #222;
+      border-radius: 5px;
     }
 
     .moon {
