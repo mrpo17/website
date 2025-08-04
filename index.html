@@ -1,151 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mrpo</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
-            font-family: Arial, sans-serif;
-        }
-        .login-container {
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            width: 300px;
-            text-align: center;
-        }
-        h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #6e8efb;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #5d7ae8;
-        }
-        .error-message {
-            color: red;
-            font-size: 12px;
-            margin-top: 10px;
-            display: none;
-        }
-        .visitor-counter {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .redirect-message {
-            color: #333;
-            font-size: 16px;
-            margin-top: 20px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    .container {
+      text-align: center;
+      z-index: 1;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .song-title {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      width: 100%;
+      text-align: center;
+      color: #888;
+      display: none;
+    }
+    .moon {
+      width: 100px;
+      height: 100px;
+      background: url('https://via.placeholder.com/100') no-repeat center;
+      background-size: cover;
+      margin: 20px auto;
+      border-radius: 50%;
+    }
+    .username {
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .links a {
+      display: block;
+      color: #00ff00;
+      text-decoration: none;
+      margin: 5px 0;
+    }
+    .links a:hover {
+      text-decoration: underline;
+    }
+    #volumeSlider {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      display: none;
+    }
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(5px);
+      color: #888;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    audio {
+      display: none;
+    }
+  </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>mrpo</h2>
-        <form id="login-form">
-            <input type="text" id="username" placeholder="Username" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Submit</button>
-            <div id="error-message" class="error-message">Information is incorrect</div>
-        </form>
+  <canvas id="starfield"></canvas>
+  <div id="overlay">enter</div>
+  <div class="song-title">Los Seres de Proteccion - Las Energías</div>
+  <div class="container">
+    <div class="moon"></div>
+    <div class="username">lain</div>
+    <div class="links">
+      <a href="#">ppp</a>
+      <a href="#">session</a>
+      <a href="#">signal</a>
+      <a href="#">discord</a>
+      <a href="#">twitter</a>
+      <a href="#">github</a>
+      <a href="#">youtube</a>
+      <a href="#">steam</a>
     </div>
+  </div>
+  <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+  <audio id="song" loop>
+    <source src="https://example.com/los-seres-de-proteccion-las-energias.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  <script>
+    const audio = document.getElementById('song');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    const overlay = document.getElementById('overlay');
 
-    <div class="visitor-counter">
-        <a href="https://info.flagcounter.com/egIM">
-            <img src="https://s01.flagcounter.com/count2/egIM/bg_FFFFFF/txt_000000/border_CCCCCC/columns_2/maxflags_10/viewers_0/labels_0/pageviews_1/flags_0/percent_0/" 
-                 alt="Flag Counter" 
-                 border="0">
-        </a>
-    </div>
+    // Set canvas size
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const form = document.getElementById("login-form");
-            const errorMessage = document.getElementById("error-message");
-            const loginContainer = document.querySelector(".login-container");
-            const serverUrl = "https://server-k94x.onrender.com";
+    // Resize canvas on window resize
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
 
-            form.addEventListener("submit", function(event) {
-                event.preventDefault();
-                const username = document.getElementById("username").value;
-                const password = document.getElementById("password").value;
+    // Volume control
+    volumeSlider.addEventListener('input', () => {
+      audio.volume = volumeSlider.value;
+    });
 
-                if (username === "" || password === "") {
-                    errorMessage.style.display = "block";
-                    errorMessage.textContent = "Please enter both username and password.";
-                    setTimeout(() => { errorMessage.style.display = "none"; }, 3000);
-                    return;
-                }
+    // Web Audio API setup
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioContext.createMediaElementSource(audio);
+    const analyser = audioContext.createAnalyser();
+    analyser.fftSize = 256;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
 
-                if (username === "mrpo" && password === "osuisawesome") {
-                    // Update login container to show redirecting message
-                    loginContainer.innerHTML = `
-                        <h2>mrpo</h2>
-                        <div class="redirect-message">Redirecting...</div>
-                    `;
+    source.connect(analyser);
+    analyser.connect(audioContext.destination);
 
-                    // Attempt server login notification
-                    fetch(`${serverUrl}/login`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ username, password }),
-                        mode: 'no-cors'
-                    })
-                        .then(response => {
-                            console.log('Server response status:', response.status);
-                            setTimeout(() => {
-                                window.location.href = "https://guns.lol/mrpo";
-                            }, 2000);
-                        })
-                        .catch(error => {
-                            console.error("Error sending login request:", error.message);
-                            loginContainer.innerHTML = `
-                                <h2>mrpo</h2>
-                                <div class="redirect-message">Server unavailable, but login successful. Redirecting...</div>
-                            `;
-                            setTimeout(() => {
-                                window.location.href = "https://guns.lol/mrpo";
-                            }, 2000);
-                        });
-                } else {
-                    errorMessage.style.display = "block";
-                    errorMessage.textContent = "Information is incorrect";
-                    setTimeout(() => { errorMessage.style.display = "none"; }, 3000);
-                    form.reset();
-                }
-            });
-        });
-    </script>
+    // Generate stars
+    const numStars = 200;
+    const stars = [];
+    for (let i = 0; i < numStars; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2 + 1,
+        vx: Math.random() * 0.5 - 0.25,
+        vy: Math.random() * 0.5 - 0.25
+      });
+    }
+
+    // Animation loop
+    function animate() {
+      analyser.getByteFrequencyData(dataArray);
+
+      // Calculate average frequency (0-1)
+      let sum = 0;
+      for (let i = 0; i < bufferLength; i++) {
+        sum += dataArray[i];
+      }
+      const avg = sum / (bufferLength * 255);
+
+      // Clear canvas
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw and update stars
+      stars.forEach(star => {
+        // Update position based on velocity modulated by audio
+        star.x += star.vx * (1 + avg * 5);
+        star.y += star.vy * (1 + avg * 5);
+
+        // Wrap around edges
+        if (star.x < 0) star.x = canvas.width;
+        if (star.x > canvas.width) star.x = 0;
+        if (star.y < 0) star.y = canvas.height;
+        if (star.y > canvas.height) star.y = 0;
+
+        // Draw star with size modulated by audio
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius + avg * 2, 0, Math.PI * 2);
+        ctx.fillStyle = '#a0a'; // Purple stars
+        ctx.fill();
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    // Start animation immediately for static stars
+    animate();
+
+    // Enter click handler
+    overlay.addEventListener('click', () => {
+      overlay.style.display = 'none';
+      document.querySelector('.song-title').style.display = 'block';
+      document.querySelector('.container').style.display = 'flex';
+      volumeSlider.style.display = 'block';
+      audio.play();
+    });
+  </script>
 </body>
 </html>
