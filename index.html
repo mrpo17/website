@@ -8,7 +8,6 @@
     body {
       margin: 0;
       padding: 0;
-      background: #000 url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==') repeat;
       color: #888888;
       font-family: Arial, sans-serif;
       height: 100vh;
@@ -18,10 +17,17 @@
       justify-content: center;
       align-items: center;
     }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
     .container {
       text-align: center;
       z-index: 1;
-      display: none;
       flex-direction: column;
       align-items: center;
       opacity: 0;
@@ -44,16 +50,25 @@
     .moon {
       width: 100px;
       height: 100px;
-      background: url('https://i.imgur.com/0Yg3Z5L.jpeg') no-repeat center;
+      background: url('https://cdn.discordapp.com/attachments/1278875617609121863/1402050515222659153/wp9955315.png?ex=689280cb&is=68912f4b&hm=7378ce05d0c461a568c1b9efd2011d8a04f7a7e1edd33adbca998b97ae45f53a&') no-repeat center;
       background-size: cover;
       margin: 20px auto;
       border-radius: 50%;
+      opacity: 0;
+      transition: opacity 2s ease-in;
     }
     .username {
       color: #888888;
       margin: 20px 0;
       font-size: 24px;
       font-family: Arial, sans-serif;
+      opacity: 0;
+      transition: opacity 2s ease-in;
+    }
+    .links {
+      margin-top: 20px;
+      opacity: 0;
+      transition: opacity 2s ease-in;
     }
     .links a {
       display: block;
@@ -62,6 +77,8 @@
       margin: 10px 0;
       font-size: 16px;
       font-family: Arial, sans-serif;
+      opacity: 0;
+      transition: opacity 2s ease-in;
     }
     .links a:hover {
       text-decoration: underline;
@@ -73,7 +90,6 @@
       background: #888888;
       outline: none;
       border-radius: 5px;
-      display: none;
       opacity: 0;
       transition: opacity 2s ease-in;
     }
@@ -102,6 +118,7 @@
       font-family: Arial, sans-serif;
       opacity: 1;
       transition: opacity 5s ease-out;
+      cursor: pointer; /* Make it look like a button */
     }
     audio {
       display: none;
@@ -115,6 +132,7 @@
   </style>
 </head>
 <body>
+  <canvas id="starfield"></canvas>
   <div id="overlay">enter</div>
   <div class="song-title">
     <span>Los Seres de Proteccion - Las Energías</span>
@@ -123,7 +141,7 @@
   <div class="container">
     <div class="moon"></div>
     <div class="username">mrpo</div>
-    <div class="links">
+    <div class="links" style="display: block;">
       <a href="#">ppp</a>
       <a href="#">session</a>
       <a href="#">signal</a>
@@ -135,7 +153,7 @@
     </div>
   </div>
   <audio id="song" loop>
-    <source src="https://cdn.discordapp.com/attachments/1278875617609121863/1402043216081195089/ambient.mp3?ex=689279ff&is=6891287f&hm=9524f060692ff482bb53fbbf017f23c650d51e44a2555034124af2a974e11cd2&" type="audio/mpeg">
+    <source src="https://github.com/mrpo17/website/raw/refs/heads/main/ambient.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
   <script>
@@ -144,6 +162,20 @@
     const overlay = document.getElementById('overlay');
     const container = document.querySelector('.container');
     const songTitle = document.querySelector('.song-title');
+    const moon = document.querySelector('.moon');
+    const username = document.querySelector('.username');
+    const linksContainer = document.querySelector('.links');
+    const links = document.querySelectorAll('.links a');
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+
+    // Set canvas size
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
 
     // Set initial volume
     audio.volume = 0.25;
@@ -153,18 +185,135 @@
       audio.volume = volumeSlider.value;
     });
 
+    // Web Audio API setup
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioContext.createMediaElementSource(audio);
+    const analyser = audioContext.createAnalyser();
+    analyser.fftSize = 256;
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    source.connect(analyser);
+    analyser.connect(audioContext.destination);
+
+    // Generate stars
+    const numStars = 200;
+    const stars = [];
+    for (let i = 0; i < numStars; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2 + 1,
+        vx: Math.random() * 0.5 - 0.25,
+        vy: Math.random() * 0.5 - 0.25
+      });
+    }
+
+    // Animation loop
+    function animate() {
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+      if (audio.paused) return; // Stop animation if audio is paused
+      analyser.getByteFrequencyData(dataArray);
+
+      // Calculate average frequency (0-1)
+      let sum = 0;
+      for (let i = 0; i < bufferLength; i++) {
+        sum += dataArray[i];
+      }
+      const avg = sum / (bufferLength * 255);
+
+      // Clear canvas
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw and update stars
+      stars.forEach(star => {
+        // Update position based on velocity modulated by audio
+        star.x += star.vx * (1 + avg * 5);
+        star.y += star.vy * (1 + avg * 5);
+
+        // Wrap around edges
+        if (star.x < 0) star.x = canvas.width;
+        if (star.x > canvas.width) star.x = 0;
+        if (star.y < 0) star.y = canvas.height;
+        if (star.y > canvas.height) star.y = 0;
+
+        // Draw star with size modulated by audio
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius + avg * 2, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff'; // White stars
+        ctx.fill();
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    // Start animation when audio plays
+    audio.addEventListener('play', () => {
+      animate();
+    });
+
     // Enter click handler with fade effect
     overlay.addEventListener('click', () => {
       overlay.classList.add('fade-out');
       setTimeout(() => {
         overlay.style.display = 'none';
         songTitle.style.display = 'flex';
-        container.style.display = 'flex';
-        volumeSlider.style.display = 'block';
+        container.style.display = 'block';
+        volumeSlider.style.opacity = '1';
         container.classList.add('fade-in');
         songTitle.classList.add('fade-in');
-        volumeSlider.classList.add('fade-in');
-        audio.play().catch(error => console.log('Audio play failed:', error));
+        moon.classList.add('fade-in');
+        username.classList.add('fade-in');
+        linksContainer.classList.add('fade-in');
+        if (links.length > 0) {
+          links.forEach(link => {
+            link.style.opacity = '0'; // Reset to trigger transition
+            link.style.display = 'block'; // Ensure display
+            link.classList.add('fade-in'); // Apply fade-in immediately
+          });
+        } else {
+          console.error('No link elements found in .links!');
+          const fallbackLinks = ['ppp', 'session', 'signal', 'discord', 'twitter', 'github', 'youtube', 'steam'];
+          fallbackLinks.forEach(text => {
+            const a = document.createElement('a');
+            a.href = '#';
+            a.textContent = text;
+            a.style.color = '#00ff00';
+            a.style.textDecoration = 'none';
+            a.style.margin = '10px 0';
+            a.style.fontSize = '16px';
+            a.style.fontFamily = 'Arial, sans-serif';
+            a.style.opacity = '0';
+            a.style.transition = 'opacity 2s ease-in';
+            linksContainer.appendChild(a);
+            a.classList.add('fade-in'); // Immediate fade-in for fallback
+          });
+          console.log('Fallback links added:', fallbackLinks.length);
+        }
+        // Play audio 0.5 seconds after click
+        setTimeout(() => {
+          if (audioContext.state === 'suspended') {
+            audioContext.resume().then(() => {
+              audio.play().then(() => {
+                console.log('Audio resumed and playing');
+              }).catch(err => console.error('Audio play after resume failed:', err.message));
+            }).catch(err => console.error('Audio context resume failed:', err.message));
+          } else {
+            audio.play().then(() => {
+              console.log('Audio started playing');
+            }).catch(err => console.error('Audio play failed:', err.message));
+          }
+          // Fetch to test URL accessibility
+          fetch(audio.src)
+            .then(response => {
+              if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+              console.log('Audio URL is accessible');
+            })
+            .catch(err => console.error('Audio URL fetch failed:', err.message));
+        }, 500); // 0.5-second delay
       }, 5000); // Match the 5-second fade-out duration
     });
   </script>
