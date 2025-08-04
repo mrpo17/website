@@ -4,6 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Website</title>
+
+  <!-- ✅ Font Awesome CDN for volume icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
   <style>
     body {
       margin: 0;
@@ -42,10 +46,9 @@
       transition: opacity 2s ease-in;
     }
 
-    .song-title i {
-      font-style: normal;
+    .song-title .fa-volume-down {
       color: #00ff00;
-      font-size: 16px;
+      font-size: 14px;
     }
 
     .moon {
@@ -161,11 +164,13 @@
 </head>
 <body>
   <div id="overlay">enter</div>
+
   <div class="song-title">
     <span>Los Seres de Proteccion - Las Energías</span>
-    <i>🔊</i>
+    <i class="fas fa-volume-down"></i>
     <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.15">
   </div>
+
   <div class="container">
     <div class="moon"></div>
     <div class="username">mrpo</div>
@@ -180,10 +185,12 @@
       <a href="#">steam</a>
     </div>
   </div>
+
   <audio id="song" loop>
     <source src="https://github.com/mrpo17/website/raw/refs/heads/main/ambient.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
+
   <script>
     const audio = document.getElementById('song');
     const volumeSlider = document.getElementById('volumeSlider');
