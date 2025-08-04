@@ -9,7 +9,7 @@
       margin: 0;
       padding: 0;
       background: #000 url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==') repeat;
-      color: #fff;
+      color: #888888;
       font-family: Arial, sans-serif;
       height: 100vh;
       overflow: hidden;
@@ -24,6 +24,8 @@
       display: none;
       flex-direction: column;
       align-items: center;
+      opacity: 0;
+      transition: opacity 2s ease-in;
     }
     .song-title {
       position: fixed;
@@ -31,11 +33,13 @@
       left: 50%;
       transform: translateX(-50%);
       font-size: 12px;
-      color: #888;
+      color: #888888;
       display: none;
       display: flex;
       align-items: center;
       gap: 10px;
+      opacity: 0;
+      transition: opacity 2s ease-in;
     }
     .moon {
       width: 100px;
@@ -46,9 +50,10 @@
       border-radius: 50%;
     }
     .username {
-      color: #fff;
+      color: #888888;
       margin: 20px 0;
       font-size: 24px;
+      font-family: Arial, sans-serif;
     }
     .links a {
       display: block;
@@ -56,6 +61,7 @@
       text-decoration: none;
       margin: 10px 0;
       font-size: 16px;
+      font-family: Arial, sans-serif;
     }
     .links a:hover {
       text-decoration: underline;
@@ -64,10 +70,12 @@
       width: 100px;
       height: 5px;
       appearance: none;
-      background: #888;
+      background: #888888;
       outline: none;
       border-radius: 5px;
       display: none;
+      opacity: 0;
+      transition: opacity 2s ease-in;
     }
     #volumeSlider::-webkit-slider-thumb {
       appearance: none;
@@ -89,12 +97,20 @@
       z-index: 10;
       background: rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(5px);
-      color: #888;
+      color: #888888;
       font-size: 16px;
-      cursor: pointer;
+      font-family: Arial, sans-serif;
+      opacity: 1;
+      transition: opacity 5s ease-out;
     }
     audio {
       display: none;
+    }
+    .fade-in {
+      opacity: 1;
+    }
+    .fade-out {
+      opacity: 0;
     }
   </style>
 </head>
@@ -102,7 +118,7 @@
   <div id="overlay">enter</div>
   <div class="song-title">
     <span>Los Seres de Proteccion - Las Energías</span>
-    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.25">
   </div>
   <div class="container">
     <div class="moon"></div>
@@ -126,19 +142,30 @@
     const audio = document.getElementById('song');
     const volumeSlider = document.getElementById('volumeSlider');
     const overlay = document.getElementById('overlay');
+    const container = document.querySelector('.container');
+    const songTitle = document.querySelector('.song-title');
+
+    // Set initial volume
+    audio.volume = 0.25;
 
     // Volume control
     volumeSlider.addEventListener('input', () => {
       audio.volume = volumeSlider.value;
     });
 
-    // Enter click handler
+    // Enter click handler with fade effect
     overlay.addEventListener('click', () => {
-      overlay.style.display = 'none';
-      document.querySelector('.song-title').style.display = 'flex';
-      document.querySelector('.container').style.display = 'flex';
-      volumeSlider.style.display = 'block';
-      audio.play().catch(error => console.log('Audio play failed:', error));
+      overlay.classList.add('fade-out');
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        songTitle.style.display = 'flex';
+        container.style.display = 'flex';
+        volumeSlider.style.display = 'block';
+        container.classList.add('fade-in');
+        songTitle.classList.add('fade-in');
+        volumeSlider.classList.add('fade-in');
+        audio.play().catch(error => console.log('Audio play failed:', error));
+      }, 5000); // Match the 5-second fade-out duration
     });
   </script>
 </body>
