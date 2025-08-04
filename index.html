@@ -8,29 +8,22 @@
     body {
       margin: 0;
       padding: 0;
-      background: #000;
+      background: #000 url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==') repeat;
       color: #fff;
       font-family: Arial, sans-serif;
       height: 100vh;
       overflow: hidden;
       position: relative;
-    }
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     .container {
       text-align: center;
       z-index: 1;
       display: none;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      height: 100vh;
     }
     .song-title {
       position: fixed;
@@ -38,39 +31,51 @@
       left: 50%;
       transform: translateX(-50%);
       font-size: 12px;
-      width: 100%;
-      text-align: center;
       color: #888;
       display: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     .moon {
       width: 100px;
       height: 100px;
-      background: url('https://via.placeholder.com/100') no-repeat center;
+      background: url('https://i.imgur.com/0Yg3Z5L.jpeg') no-repeat center;
       background-size: cover;
-      margin: 20px auto;
+      margin: 50px auto;
       border-radius: 50%;
     }
     .username {
       color: #fff;
-      margin-bottom: 10px;
+      margin: 20px 0;
+      font-size: 24px;
     }
     .links a {
       display: block;
       color: #00ff00;
       text-decoration: none;
-      margin: 5px 0;
+      margin: 10px 0;
+      font-size: 16px;
     }
     .links a:hover {
       text-decoration: underline;
     }
     #volumeSlider {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 200px;
+      width: 100px;
+      height: 5px;
+      appearance: none;
+      background: #888;
+      outline: none;
+      border-radius: 5px;
       display: none;
+    }
+    #volumeSlider::-webkit-slider-thumb {
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      background: #00ff00;
+      border-radius: 50%;
+      cursor: pointer;
     }
     #overlay {
       position: fixed;
@@ -94,12 +99,14 @@
   </style>
 </head>
 <body>
-  <canvas id="starfield"></canvas>
   <div id="overlay">enter</div>
-  <div class="song-title">Los Seres de Proteccion - Las Energías</div>
+  <div class="song-title">
+    <span>Los Seres de Proteccion - Las Energías</span>
+    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+  </div>
   <div class="container">
     <div class="moon"></div>
-    <div class="username">lain</div>
+    <div class="username">mrpo</div>
     <div class="links">
       <a href="#">ppp</a>
       <a href="#">session</a>
@@ -111,7 +118,6 @@
       <a href="#">steam</a>
     </div>
   </div>
-  <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="1">
   <audio id="song" loop>
     <source src="https://example.com/los-seres-de-proteccion-las-energias.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
@@ -119,96 +125,20 @@
   <script>
     const audio = document.getElementById('song');
     const volumeSlider = document.getElementById('volumeSlider');
-    const canvas = document.getElementById('starfield');
-    const ctx = canvas.getContext('2d');
     const overlay = document.getElementById('overlay');
-
-    // Set canvas size
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    // Resize canvas on window resize
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    });
 
     // Volume control
     volumeSlider.addEventListener('input', () => {
       audio.volume = volumeSlider.value;
     });
 
-    // Web Audio API setup
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const source = audioContext.createMediaElementSource(audio);
-    const analyser = audioContext.createAnalyser();
-    analyser.fftSize = 256;
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-
-    source.connect(analyser);
-    analyser.connect(audioContext.destination);
-
-    // Generate stars
-    const numStars = 200;
-    const stars = [];
-    for (let i = 0; i < numStars; i++) {
-      stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        radius: Math.random() * 2 + 1,
-        vx: Math.random() * 0.5 - 0.25,
-        vy: Math.random() * 0.5 - 0.25
-      });
-    }
-
-    // Animation loop
-    function animate() {
-      analyser.getByteFrequencyData(dataArray);
-
-      // Calculate average frequency (0-1)
-      let sum = 0;
-      for (let i = 0; i < bufferLength; i++) {
-        sum += dataArray[i];
-      }
-      const avg = sum / (bufferLength * 255);
-
-      // Clear canvas
-      ctx.fillStyle = '#000';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Draw and update stars
-      stars.forEach(star => {
-        // Update position based on velocity modulated by audio
-        star.x += star.vx * (1 + avg * 5);
-        star.y += star.vy * (1 + avg * 5);
-
-        // Wrap around edges
-        if (star.x < 0) star.x = canvas.width;
-        if (star.x > canvas.width) star.x = 0;
-        if (star.y < 0) star.y = canvas.height;
-        if (star.y > canvas.height) star.y = 0;
-
-        // Draw star with size modulated by audio
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius + avg * 2, 0, Math.PI * 2);
-        ctx.fillStyle = '#a0a'; // Purple stars
-        ctx.fill();
-      });
-
-      requestAnimationFrame(animate);
-    }
-
-    // Start animation immediately for static stars
-    animate();
-
     // Enter click handler
     overlay.addEventListener('click', () => {
       overlay.style.display = 'none';
-      document.querySelector('.song-title').style.display = 'block';
+      document.querySelector('.song-title').style.display = 'flex';
       document.querySelector('.container').style.display = 'flex';
       volumeSlider.style.display = 'block';
-      audio.play();
+      audio.play().catch(error => console.log('Audio play failed:', error));
     });
   </script>
 </body>
