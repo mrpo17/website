@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Website</title>
 
-  <!-- ✅ Font Awesome CDN for volume icon -->
+  <!-- Font Awesome for volume icon -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
   <style>
@@ -47,8 +47,38 @@
     }
 
     .song-title .fa-volume-down {
-      color: #00ff00;
+      color: #888888;
       font-size: 14px;
+    }
+
+    #volumeSlider {
+      width: 100px;
+      height: 4px;
+      background: #fff;
+      border-radius: 5px;
+      outline: none;
+      appearance: none;
+      opacity: 0;
+      transition: opacity 2s ease-in;
+    }
+
+    /* Webkit (Chrome, Safari) */
+    #volumeSlider::-webkit-slider-thumb {
+      appearance: none;
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    /* Firefox */
+    #volumeSlider::-moz-range-thumb {
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      border-radius: 50%;
+      cursor: pointer;
     }
 
     .moon {
@@ -88,43 +118,6 @@
 
     .links a:hover {
       text-decoration: underline;
-    }
-
-    #volumeSlider {
-      width: 100px;
-      height: 4px;
-      appearance: none;
-      background: #333;
-      border-radius: 5px;
-      outline: none;
-      opacity: 0;
-      transition: opacity 2s ease-in;
-    }
-
-    #volumeSlider::-webkit-slider-thumb {
-      appearance: none;
-      width: 12px;
-      height: 12px;
-      background: #00ff00;
-      border-radius: 50%;
-      border: none;
-      box-shadow: 0 0 4px #00ff00;
-      cursor: pointer;
-    }
-
-    #volumeSlider::-moz-range-thumb {
-      width: 12px;
-      height: 12px;
-      background: #00ff00;
-      border: none;
-      border-radius: 50%;
-      box-shadow: 0 0 4px #00ff00;
-      cursor: pointer;
-    }
-
-    #volumeSlider::-moz-range-track {
-      background: #333;
-      border-radius: 5px;
     }
 
     #overlay {
