@@ -4,10 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Website</title>
-
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
   <style>
     body {
       margin: 0;
@@ -22,7 +20,6 @@
       justify-content: center;
       align-items: center;
     }
-
     .container {
       text-align: center;
       z-index: 1;
@@ -31,7 +28,6 @@
       opacity: 0;
       transition: opacity 2s ease-in;
     }
-
     .song-title {
       position: fixed;
       top: 10px;
@@ -45,12 +41,10 @@
       opacity: 0;
       transition: opacity 2s ease-in;
     }
-
     .song-title .fa-volume-down {
       color: #888888;
       font-size: 14px;
     }
-
     #volumeSlider {
       width: 100px;
       height: 4px;
@@ -61,7 +55,6 @@
       opacity: 0;
       transition: opacity 2s ease-in;
     }
-
     #volumeSlider::-webkit-slider-thumb {
       appearance: none;
       width: 10px;
@@ -71,7 +64,6 @@
       cursor: pointer;
       border: none;
     }
-
     #volumeSlider::-moz-range-thumb {
       width: 10px;
       height: 10px;
@@ -80,12 +72,10 @@
       cursor: pointer;
       border: none;
     }
-
     #volumeSlider::-moz-range-track {
       background: #222;
       border-radius: 5px;
     }
-
     .moon {
       width: 100px;
       height: 100px;
@@ -96,7 +86,6 @@
       opacity: 0;
       transition: opacity 2s ease-in;
     }
-
     .username {
       color: #888888;
       margin: 20px 0;
@@ -104,7 +93,6 @@
       opacity: 0;
       transition: opacity 2s ease-in;
     }
-
     .links {
       margin-top: 20px;
       opacity: 0;
@@ -114,18 +102,15 @@
       justify-content: center;
       gap: 20px;
     }
-
     .links a {
       color: #888888;
       font-size: 22px;
       text-decoration: none;
       transition: transform 0.2s ease;
     }
-
     .links a:hover {
       transform: scale(1.2);
     }
-
     #overlay {
       position: fixed;
       top: 0;
@@ -143,19 +128,15 @@
       opacity: 1;
       transition: opacity 3.5s ease-out;
     }
-
     #overlay.fade-out {
       opacity: 0;
     }
-
     audio {
       display: none;
     }
-
     .fade-in {
       opacity: 1;
     }
-
     .fade-out {
       opacity: 0;
     }
@@ -163,21 +144,16 @@
 </head>
 <body>
   <div id="overlay">enter</div>
-
   <div class="song-title">
     <span>Los Seres de Proteccion - Las Energías</span>
     <i class="fas fa-volume-down"></i>
     <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.15">
   </div>
-
   <div class="container">
     <div class="moon"></div>
     <div class="username">mrpo</div>
     <div class="links">
       <!-- Icons for social/media -->
-      <a href="#" title="PGP"><i class="fas fa-lock"></i></a>
-      <a href="#" title="Session"><i class="fas fa-comment-dots"></i></a>
-      <a href="#" title="Signal"><i class="fas fa-signal"></i></a>
       <a href="#" title="Discord"><i class="fab fa-discord"></i></a>
       <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
       <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
@@ -185,12 +161,10 @@
       <a href="#" title="Steam"><i class="fab fa-steam"></i></a>
     </div>
   </div>
-
   <audio id="song" loop>
     <source src="https://github.com/mrpo17/website/raw/refs/heads/main/ambient.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
-
   <script>
     const audio = document.getElementById('song');
     const volumeSlider = document.getElementById('volumeSlider');
@@ -200,14 +174,11 @@
     const moon = document.querySelector('.moon');
     const username = document.querySelector('.username');
     const linksContainer = document.querySelector('.links');
-
     audio.volume = 0.15;
     audio.muted = false;
-
     volumeSlider.addEventListener('input', () => {
       audio.volume = volumeSlider.value;
     });
-
     overlay.addEventListener('click', () => {
       overlay.classList.add('fade-out');
       setTimeout(() => {
@@ -220,7 +191,6 @@
         moon.classList.add('fade-in');
         username.classList.add('fade-in');
         linksContainer.classList.add('fade-in');
-
         setTimeout(() => {
           audio.muted = false;
           audio.play().catch(err => console.error('Audio play failed:', err.message));
