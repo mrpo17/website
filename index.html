@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Website</title>
 
-  <!-- Font Awesome for volume icon -->
+  <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
   <style>
@@ -54,7 +54,7 @@
     #volumeSlider {
       width: 100px;
       height: 4px;
-      background: #222; /* Dark track */
+      background: #222;
       border-radius: 5px;
       outline: none;
       appearance: none;
@@ -62,22 +62,20 @@
       transition: opacity 2s ease-in;
     }
 
-    /* Chrome, Safari */
     #volumeSlider::-webkit-slider-thumb {
       appearance: none;
       width: 10px;
       height: 10px;
-      background: #fff;
+      background: #444; /* Dark thumb */
       border-radius: 50%;
       cursor: pointer;
       border: none;
     }
 
-    /* Firefox */
     #volumeSlider::-moz-range-thumb {
       width: 10px;
       height: 10px;
-      background: #fff;
+      background: #444;
       border-radius: 50%;
       cursor: pointer;
       border: none;
@@ -111,20 +109,21 @@
       margin-top: 20px;
       opacity: 0;
       transition: opacity 2s ease-in;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
     }
 
     .links a {
-      display: block;
-      color: #00ff00;
+      color: #888888;
+      font-size: 22px;
       text-decoration: none;
-      margin: 10px 0;
-      font-size: 16px;
-      opacity: 0;
-      transition: opacity 2s ease-in;
+      transition: transform 0.2s ease;
     }
 
     .links a:hover {
-      text-decoration: underline;
+      transform: scale(1.2);
     }
 
     #overlay {
@@ -174,15 +173,16 @@
   <div class="container">
     <div class="moon"></div>
     <div class="username">mrpo</div>
-    <div class="links" style="display: block;">
-      <a href="#">pgp</a>
-      <a href="#">session</a>
-      <a href="#">signal</a>
-      <a href="#">discord</a>
-      <a href="#">twitter</a>
-      <a href="#">github</a>
-      <a href="#">youtube</a>
-      <a href="#">steam</a>
+    <div class="links">
+      <!-- Icons for social/media -->
+      <a href="#" title="PGP"><i class="fas fa-lock"></i></a>
+      <a href="#" title="Session"><i class="fas fa-comment-dots"></i></a>
+      <a href="#" title="Signal"><i class="fas fa-signal"></i></a>
+      <a href="#" title="Discord"><i class="fab fa-discord"></i></a>
+      <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+      <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+      <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+      <a href="#" title="Steam"><i class="fab fa-steam"></i></a>
     </div>
   </div>
 
@@ -200,7 +200,6 @@
     const moon = document.querySelector('.moon');
     const username = document.querySelector('.username');
     const linksContainer = document.querySelector('.links');
-    const links = document.querySelectorAll('.links a');
 
     audio.volume = 0.15;
     audio.muted = false;
@@ -221,28 +220,6 @@
         moon.classList.add('fade-in');
         username.classList.add('fade-in');
         linksContainer.classList.add('fade-in');
-
-        if (links.length > 0) {
-          links.forEach(link => {
-            link.style.opacity = '1';
-          });
-        } else {
-          const fallbackLinks = ['pgp', 'session', 'signal', 'discord', 'twitter', 'github', 'youtube', 'steam'];
-          fallbackLinks.forEach(text => {
-            const a = document.createElement('a');
-            a.href = '#';
-            a.textContent = text;
-            a.style.color = '#00ff00';
-            a.style.textDecoration = 'none';
-            a.style.margin = '10px 0';
-            a.style.fontSize = '16px';
-            a.style.opacity = '0';
-            a.style.transition = 'opacity 2s ease-in';
-            linksContainer.appendChild(a);
-            a.classList.add('fade-in');
-            a.style.opacity = '1';
-          });
-        }
 
         setTimeout(() => {
           audio.muted = false;
