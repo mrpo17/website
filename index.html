@@ -187,6 +187,110 @@
       object-fit: contain;
       vertical-align: middle;
     }
+    /* Comment Section Styles */
+    .comment-section {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 300px; /* Fixed width for the right side */
+      height: 100vh;
+      background: #111; /* Slightly lighter than body background for contrast */
+      color: #888888;
+      padding: 20px;
+      box-sizing: border-box;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      overflow-y: hidden; /* Removed unwanted vertical scrollbar */
+      transition: width 0.3s ease; /* Smooth transition for closing */
+      opacity: 0; /* Hidden by default */
+      pointer-events: none; /* Disable interactions when hidden */
+    }
+    .comment-section.visible {
+      opacity: 1; /* Visible when overlay is faded out */
+      pointer-events: auto; /* Enable interactions when visible */
+    }
+    .comment-section.closed {
+      width: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .comment-section h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .close-button {
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .comment-username {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #222;
+      border: none;
+      border-radius: 5px;
+      color: #888888;
+    }
+    .comment-username:focus {
+      outline: none;
+      background: #333;
+    }
+    .comment-input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #222;
+      border: none;
+      border-radius: 5px;
+      color: #888888;
+      resize: none; /* Prevent textarea resizing */
+    }
+    .comment-input:focus {
+      outline: none;
+      background: #333;
+    }
+    .comment-submit {
+      background: #333;
+      border: none;
+      padding: 10px;
+      color: #888888;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .comment-submit:hover {
+      background: #444;
+    }
+    .comments-list {
+      margin-top: 10px;
+      flex-grow: 1;
+      overflow-y: auto; /* Enable vertical scrolling only when needed */
+    }
+    .comment {
+      padding: 10px;
+      border-bottom: 1px solid #444;
+      word-wrap: break-word;
+    }
+    .reopen-button {
+      position: fixed;
+      top: 50%;
+      right: 0;
+      background: #111;
+      color: #888888;
+      padding: 10px;
+      cursor: pointer;
+      transform: translateY(-50%);
+      z-index: 5;
+      display: none; /* Hidden when comment section is open */
+      border-radius: 5px 0 0 5px;
+    }
+    .reopen-button.show {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -211,6 +315,14 @@
       <a href="https://www.roblox.com/users/418192832/profile" target="_blank" title="Roblox"><img src="https://cdn.discordapp.com/attachments/1278875617609121863/1402076023234887711/1ac6c5d7cbf6c64b13923d7e258f34a3.jpg?ex=6892988d&is=6891470d&hm=898fc894276b9c62c98a561ccfb8d46a68c47c9f8f1aaa6cd2becf8a53abed05&" alt="Roblox" class="roblox-icon"></a>
     </div>
   </div>
+  <div class="comment-section">
+    <h3>Comments <span class="close-button" onclick="toggleCommentSection()">x</span></h3>
+    <input type="text" class="comment-username" placeholder="Your Username" maxlength="20">
+    <textarea class="comment-input" placeholder="Type your comment..." rows="3"></textarea>
+    <button class="comment-submit" onclick="submitComment()">Submit</button>
+    <div class="comments-list" id="commentsList"></div>
+  </div>
+  <div class="reopen-button" onclick="toggleCommentSection()">Open Comments</div>
   <div id="copyPopup"></div>
   <audio id="song" loop>
     <source src="https://github.com/mrpo17/website/raw/refs/heads/main/ambient.mp3">
@@ -227,6 +339,11 @@
     const username = document.querySelector('.username');
     const linksContainer = document.querySelector('.links');
     const copyPopup = document.getElementById('copyPopup');
+    const commentInput = document.querySelector('.comment-input');
+    const commentUsername = document.querySelector('.comment-username');
+    const commentsList = document.getElementById('commentsList');
+    const commentSection = document.querySelector('.comment-section');
+    const reopenButton = document.querySelector('.reopen-button');
     // Fallback for moon image
     moon.onerror = () => {
       moon.classList.add('moon-fallback');
@@ -252,6 +369,7 @@
         moon.classList.add('fade-in');
         username.classList.add('fade-in');
         linksContainer.classList.add('fade-in');
+        commentSection.classList.add('visible'); // Show comment section after fade-out
       }, 1500); // Original 1.5s fade-out time
       setTimeout(() => {
         audio.muted = false;
@@ -273,6 +391,42 @@
         console.error('Failed to copy: ', err);
       });
     }
+    // Comment Section Functionality
+    function submitComment() {
+      const commentText = commentInput.value.trim();
+      const usernameText = commentUsername.value.trim() || 'Anonymous';
+      if (commentText) {
+        const lastCommentTime = localStorage.getItem('lastCommentTime');
+        const currentTime = Date.now();
+        if (!lastCommentTime || currentTime - lastCommentTime > 86400000) { // 24 hours in milliseconds
+          let comments = JSON.parse(localStorage.getItem('comments') || '[]');
+          comments.push({ username: usernameText, text: commentText });
+          localStorage.setItem('comments', JSON.stringify(comments));
+          localStorage.setItem('lastCommentTime', currentTime);
+          displayComments();
+          commentInput.value = '';
+          commentUsername.value = '';
+        } else {
+          alert("You can only post one comment per day.");
+        }
+      }
+    }
+    function displayComments() {
+      const comments = JSON.parse(localStorage.getItem('comments') || '[]');
+      commentsList.innerHTML = '';
+      comments.forEach(comment => {
+        const commentDiv = document.createElement('div');
+        commentDiv.className = 'comment';
+        commentDiv.innerHTML = `<strong>${comment.username}:</strong> ${comment.text}`;
+        commentsList.appendChild(commentDiv);
+      });
+    }
+    function toggleCommentSection() {
+      commentSection.classList.toggle('closed');
+      reopenButton.classList.toggle('show', commentSection.classList.contains('closed'));
+    }
+    // Load comments on page load
+    displayComments();
   </script>
 </body>
 </html>
