@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta http-equiv="Content-Language" content="en">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="google" content="notranslate"> <!-- Added to prevent translation prompt -->
+  <meta name="google" content="notranslate"> <!-- Prevents translation prompt -->
   <title>mrpo</title>
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -144,6 +144,10 @@
       font-size: 16px;
       opacity: 1;
       transition: opacity 1.5s ease-out;
+      cursor: pointer; /* Indicates the entire area is clickable */
+    }
+    #overlay:hover {
+      opacity: 0.9; /* Subtle hover effect to suggest interactivity */
     }
     #overlay.fade-out {
       opacity: 0;
@@ -248,11 +252,11 @@
         moon.classList.add('fade-in');
         username.classList.add('fade-in');
         linksContainer.classList.add('fade-in');
-        setTimeout(() => {
-          audio.muted = false;
-          audio.play().catch(err => console.error('Audio play failed:', err.message));
-        }, 500);
-      }, 1500);
+      }, 1500); // Original 1.5s fade-out time
+      setTimeout(() => {
+        audio.muted = false;
+        audio.play().catch(err => console.error('Audio play failed:', err.message));
+      }, 500); // Song plays 0.5s after click, during fade-out
     });
     function copyDiscord() {
       navigator.clipboard.writeText("mrpo16").then(() => {
