@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta http-equiv="Content-Language" content="en">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="google" content="notranslate"> <!-- Prevents translation prompt -->
+  <meta name="google" content="nottranslate"> <!-- Prevents translation prompt -->
   <title>mrpo</title>
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -165,8 +165,6 @@
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.8);
-      color: #888888;
       padding: 10px 20px;
       border-radius: 5px;
       display: none;
@@ -177,6 +175,14 @@
     }
     #copyPopup.show {
       opacity: 1;
+    }
+    #copyPopup.error {
+      background: rgba(0, 0, 0, 0.8);
+      color: #ff4d4d; /* Red for errors */
+    }
+    #copyPopup.success {
+      background: rgba(0, 64, 0, 0.8); /* Green for success */
+      color: #ffffff; /* White text for contrast */
     }
     .roblox-icon {
       filter: grayscale(100%) brightness(0.533);
@@ -243,6 +249,7 @@
       transition: opacity 0.5s ease, transform 0.5s ease;
     }
     .password-input.visible {
+      display: block;
       opacity: 1;
       transform: translateY(0);
     }
@@ -335,7 +342,7 @@
   </div>
   <div class="comment-section">
     <h3>Comments <span class="close-button" onclick="toggleCommentSection()">x</span></h3>
-    <input type="text" class="comment-username" placeholder="Your Username" maxlength="25" oninput="togglePasswordField()">
+    <input type="text" class="comment-username" placeholder="username" maxlength="25" oninput="togglePasswordField()">
     <input type="password" class="password-input" placeholder="Password (for mrpo only)" style="display: none;">
     <textarea class="comment-input" placeholder="Type your comment..." rows="3" maxlength="100"></textarea>
     <div class="captcha-container">
@@ -415,19 +422,45 @@
     });
 
     function copyDiscord() {
-      navigator.clipboard.writeText("mrpo16").then(() => {
-        copyPopup.textContent = "discord copied";
-        copyPopup.classList.add('show');
-        copyPopup.style.display = 'block';
-        setTimeout(() => {
-          copyPopup.classList.remove('show');
-        }, 1500);
-        setTimeout(() => {
-          copyPopup.style.display = 'none';
-        }, 2000);
-      }).catch(err => {
-        console.error('Failed to copy: ', err);
-      });
+      copyPopup.textContent = "discord copied";
+      copyPopup.classList.add('show');
+      copyPopup.classList.add('success'); // Green for success
+      copyPopup.style.display = 'block';
+      setTimeout(() => {
+        copyPopup.classList.remove('show');
+      }, 1500);
+      setTimeout(() => {
+        copyPopup.style.display = 'none';
+        copyPopup.classList.remove('success'); // Reset class
+      }, 2000);
+    }
+
+    function showError(message) {
+      copyPopup.textContent = message;
+      copyPopup.classList.add('show');
+      copyPopup.classList.add('error'); // Red for errors
+      copyPopup.style.display = 'block';
+      setTimeout(() => {
+        copyPopup.classList.remove('show');
+      }, 3000);
+      setTimeout(() => {
+        copyPopup.style.display = 'none';
+        copyPopup.classList.remove('error'); // Reset class
+      }, 3500);
+    }
+
+    function showSuccess(message) {
+      copyPopup.textContent = message;
+      copyPopup.classList.add('show');
+      copyPopup.classList.add('success'); // Green for success
+      copyPopup.style.display = 'block';
+      setTimeout(() => {
+        copyPopup.classList.remove('show');
+      }, 3000);
+      setTimeout(() => {
+        copyPopup.style.display = 'none';
+        copyPopup.classList.remove('success'); // Reset class
+      }, 3500);
     }
 
     function toggleCommentSection() {
@@ -437,10 +470,20 @@
 
     function togglePasswordField() {
       const username = commentUsername.value.trim().toLowerCase();
-      if (username === reservedUsername && !passwordInput.classList.contains('visible')) {
-        passwordInput.classList.add('visible');
-      } else if (username !== reservedUsername && passwordInput.classList.contains('visible')) {
+      console.log('Username input:', username);
+      const isVisible = passwordInput.classList.contains('visible');
+      if (username === reservedUsername && !isVisible) {
+        console.log('Adding visible class to passwordInput');
+        passwordInput.style.display = 'block';
+        setTimeout(() => {
+          passwordInput.classList.add('visible');
+        }, 10);
+      } else if (username !== reservedUsername && isVisible) {
+        console.log('Removing visible class from passwordInput');
         passwordInput.classList.remove('visible');
+        setTimeout(() => {
+          passwordInput.style.display = 'none';
+        }, 500);
       }
     }
 
@@ -467,7 +510,7 @@
         captchaInput.value = "";
       } catch (error) {
         console.error("CAPTCHA load error:", error);
-        document.querySelector('.captcha-container').innerHTML = "Error loading CAPTCHA. Please refresh.";
+        showError(error.message || "Error loading CAPTCHA");
       }
     }
 
@@ -479,7 +522,7 @@
           commentsCache = data; // Store all comments
           return data;
         }
-        throw new Error("Error fetching comments: " + response.statusText);
+        throw new Error("Error fetching comments");
       } catch (error) {
         console.error("Error fetching comments:", error);
         return { comments: [], totalPages: 1, currentPage: 1 };
@@ -493,14 +536,13 @@
       const captchaSolution = captchaInput.value.trim();
       if (!content || !captchaSolution || content.length > 100 || username.length > 25) {
         commentInput.value = "";
-        commentInput.placeholder = "invalid message.";
-        setTimeout(() => commentInput.placeholder = "message", 2000);
+        showError("Invalid message.");
         return;
       }
       const lastCommentTime = localStorage.getItem('lastCommentTime');
       const currentTime = Date.now();
       if (lastCommentTime && currentTime - lastCommentTime < 86400000) {
-        alert("You can only post one comment per day.");
+        showError("You can only post one comment per day.");
         return;
       }
       try {
@@ -518,16 +560,15 @@
           passwordInput.classList.remove('visible');
           await loadCaptcha();
           await displayComments();
+          showSuccess("Comment posted successfully!"); // Show success message
         } else {
           const errorData = await response.json();
-          commentInput.placeholder = errorData.message || "an unknown error occurred";
-          setTimeout(() => commentInput.placeholder = "message", 3000);
+          showError(errorData.message || "An unknown error occurred");
           await loadCaptcha();
         }
       } catch (error) {
         console.error("Error posting comment:", error);
-        commentInput.placeholder = "network error.";
-        setTimeout(() => commentInput.placeholder = "message", 3000);
+        showError("Network error.");
         await loadCaptcha();
       }
     }
@@ -546,7 +587,7 @@
         });
       } catch (error) {
         console.error("Error loading comments:", error);
-        commentsList.innerHTML = '<div class="comment">Network error loading comments.</div>';
+        showError("Failed to load comments.");
       }
     }
 
@@ -556,19 +597,24 @@
       displayComments();
     });
 
-    // Add event listener for username input
-    commentUsername.addEventListener('input', togglePasswordField);
+    // Add event listener for username input (single binding)
+    if (!commentUsername.dataset.eventBound) {
+      commentUsername.addEventListener('input', togglePasswordField);
+      commentUsername.dataset.eventBound = 'true';
+    }
 
     function copyDiscord() {
       navigator.clipboard.writeText("mrpo16").then(() => {
         copyPopup.textContent = "discord copied";
         copyPopup.classList.add('show');
+        copyPopup.classList.add('success');
         copyPopup.style.display = 'block';
         setTimeout(() => {
           copyPopup.classList.remove('show');
         }, 1500);
         setTimeout(() => {
           copyPopup.style.display = 'none';
+          copyPopup.classList.remove('success');
         }, 2000);
       }).catch(err => {
         console.error('Failed to copy: ', err);
