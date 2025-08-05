@@ -296,9 +296,24 @@
       padding: 10px;
       border-bottom: 1px solid #444;
       word-wrap: break-word;
+      display: flex;
+      align-items: flex-start;
     }
     .reserved-user {
       color: #800080; /* Purple for reserved users */
+    }
+    .comment-label {
+      font-size: 12px;
+      margin-right: 5px; /* Space between label and username */
+      animation: rainbow 5s infinite; /* Slower rainbow animation */
+    }
+    @keyframes rainbow {
+      0% { color: red; }
+      20% { color: orange; }
+      40% { color: yellow; }
+      60% { color: green; }
+      80% { color: blue; }
+      100% { color: purple; }
     }
     .reopen-button {
       position: fixed;
@@ -596,7 +611,13 @@
           const commentDiv = document.createElement('div');
           commentDiv.className = 'comment';
           const isReserved = reservedUsers.includes(comment.username.toLowerCase()) ? 'reserved-user' : '';
-          commentDiv.innerHTML = `<strong class="${isReserved}">${comment.username}</strong>: ${comment.content || comment.text}`;
+          let label = '';
+          if (comment.username.toLowerCase() === 'mrpo') {
+            label = '<span class="comment-label">[creator]</span>';
+          } else if (reservedUsers.includes(comment.username.toLowerCase())) {
+            label = '<span class="comment-label">[friend]</span>';
+          }
+          commentDiv.innerHTML = `${label} <strong class="${isReserved}">${comment.username}</strong>: ${comment.content || comment.text}`;
           commentsList.appendChild(commentDiv);
         });
       } catch (error) {
