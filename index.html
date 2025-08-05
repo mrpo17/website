@@ -424,42 +424,42 @@
     function copyDiscord() {
       copyPopup.textContent = "discord copied";
       copyPopup.classList.add('show');
-      copyPopup.classList.add('success'); // Green for success
+      copyPopup.classList.add('success');
       copyPopup.style.display = 'block';
       setTimeout(() => {
         copyPopup.classList.remove('show');
       }, 1500);
       setTimeout(() => {
         copyPopup.style.display = 'none';
-        copyPopup.classList.remove('success'); // Reset class
+        copyPopup.classList.remove('success');
       }, 2000);
     }
 
     function showError(message) {
       copyPopup.textContent = message;
       copyPopup.classList.add('show');
-      copyPopup.classList.add('error'); // Red for errors
+      copyPopup.classList.add('error');
       copyPopup.style.display = 'block';
       setTimeout(() => {
         copyPopup.classList.remove('show');
       }, 3000);
       setTimeout(() => {
         copyPopup.style.display = 'none';
-        copyPopup.classList.remove('error'); // Reset class
+        copyPopup.classList.remove('error');
       }, 3500);
     }
 
     function showSuccess(message) {
       copyPopup.textContent = message;
       copyPopup.classList.add('show');
-      copyPopup.classList.add('success'); // Green for success
+      copyPopup.classList.add('success');
       copyPopup.style.display = 'block';
       setTimeout(() => {
         copyPopup.classList.remove('show');
       }, 3000);
       setTimeout(() => {
         copyPopup.style.display = 'none';
-        copyPopup.classList.remove('success'); // Reset class
+        copyPopup.classList.remove('success');
       }, 3500);
     }
 
@@ -506,7 +506,7 @@
           throw new Error("Invalid image data received");
         };
         img.src = finalImage; // Trigger load check
-        captchaToken = token;
+        captchaToken = token; // Store the token for submission
         captchaInput.value = "";
       } catch (error) {
         console.error("CAPTCHA load error:", error);
@@ -546,7 +546,7 @@
         return;
       }
       try {
-        const payload = { username, content, captchaSolution, captchaToken };
+        const payload = { username, content, captchaSolution, captchaToken }; // Include captchaToken
         if (username.toLowerCase() === reservedUsername && password) payload.password = password;
         const response = await fetch("https://api.osumrpo.com/comments", {
           method: "POST",
