@@ -206,9 +206,9 @@
       display: flex;
       flex-direction: column;
       overflow-y: auto;
-      transition: opacity 1.5s ease-out; /* Match fade-in timing */
-      opacity: 0;
-      pointer-events: none;
+      transition: opacity 1.5s ease-out;
+      opacity: 0; /* Start hidden */
+      pointer-events: none; /* Start non-interactive */
     }
     .comment-section.visible {
       opacity: 1;
@@ -222,8 +222,7 @@
       align-items: center;
     }
     .close-button {
-      cursor: pointer;
-      font-size: 16px;
+      display: none; /* Remove the X button */
     }
     .comment-username, .password-input, .comment-input, .captcha-input {
       width: 100%;
@@ -304,8 +303,8 @@
     }
     .comment-label {
       font-size: 12px;
-      margin-right: 5px; /* Space between label and username */
-      animation: rainbow 6s infinite linear; /* Slower and linear for smoothness */
+      margin-right: 5px;
+      animation: rainbow 6s infinite linear;
     }
     @keyframes rainbow {
       0% { color: red; }
@@ -314,23 +313,10 @@
       50% { color: green; }
       66.67% { color: blue; }
       83.33% { color: purple; }
-      100% { color: red; } /* Smooth back to start */
+      100% { color: red; }
     }
     .reopen-button {
-      position: fixed;
-      top: 50%;
-      right: 0;
-      background: #111;
-      color: #888888;
-      padding: 10px;
-      cursor: pointer;
-      transform: translateY(-50%);
-      z-index: 5;
-      display: none;
-      border-radius: 5px 0 0 5px;
-    }
-    .reopen-button.show {
-      display: block;
+      display: none; /* Remove reopen button */
     }
   </style>
 </head>
@@ -357,7 +343,7 @@
     </div>
   </div>
   <div class="comment-section">
-    <h3>Comments <span class="close-button" onclick="toggleCommentSection()">x</span></h3>
+    <h3>Comments</h3> <!-- Removed the close button (X) -->
     <input type="text" class="comment-username" placeholder="username" maxlength="25" oninput="togglePasswordField()">
     <input type="password" class="password-input" placeholder="Password (for reserved users)" style="display: none;">
     <textarea class="comment-input" placeholder="Type your comment..." rows="3" maxlength="100"></textarea>
@@ -369,7 +355,7 @@
     <button class="comment-submit" onclick="submitComment()">send</button>
     <div class="comments-list" id="commentsList"></div>
   </div>
-  <div class="reopen-button" onclick="toggleCommentSection()">Open Comments</div>
+  <div class="reopen-button" style="display: none;"></div> <!-- Hidden permanently -->
   <div id="copyPopup"></div>
   <audio id="song" loop>
     <source src="https://github.com/mrpo17/website/raw/refs/heads/main/ambient.mp3">
@@ -387,7 +373,6 @@
     const linksContainer = document.querySelector('.links');
     const copyPopup = document.getElementById('copyPopup');
     const commentSection = document.querySelector('.comment-section');
-    const reopenButton = document.querySelector('.reopen-button');
     const commentUsername = document.querySelector('.comment-username');
     const passwordInput = document.querySelector('.password-input');
     const commentInput = document.querySelector('.comment-input');
@@ -395,7 +380,7 @@
     const captchaInput = document.querySelector('.captcha-input');
     const commentsList = document.getElementById('commentsList');
     let captchaToken = '';
-    const reservedUsers = ['mrpo', 'user1', 'user2', 'user3', 'user4', 'user5', 'user6', 'user7']; // List of reserved users
+    const reservedUsers = ['mrpo', 'joehot', 'limit', 'moisesplays', 'melon', 'spaceyoda', 'nullbarral', 'cmrn']; // Updated reserved users
     let commentsCache = {};
 
     // Fallback for moon image
@@ -482,15 +467,12 @@
       }, 3500);
     }
 
-    function toggleCommentSection() {
-      commentSection.classList.toggle('closed');
-      reopenButton.classList.toggle('show', commentSection.classList.contains('closed'));
-    }
-
     function togglePasswordField() {
       const username = commentUsername.value.trim().toLowerCase();
-      console.log('Username input:', username);
+      const password = passwordInput.value.trim();
+      console.log('Username input:', username, 'Password input:', password);
       const isVisible = passwordInput.classList.contains('visible');
+
       if (reservedUsers.includes(username) && !isVisible) {
         console.log('Adding visible class to passwordInput');
         passwordInput.style.display = 'block';
@@ -608,7 +590,7 @@
       try {
         const data = await fetchComments();
         commentsList.innerHTML = '';
-        data.comments.forEach(comment => {
+        data.comments.forEach((comment, index) => {
           const commentDiv = document.createElement('div');
           commentDiv.className = 'comment';
           const isReserved = reservedUsers.includes(comment.username.toLowerCase()) ? 'reserved-user' : '';
@@ -633,11 +615,10 @@
       displayComments();
     });
 
-    // Add event listener for username input (single binding)
-    if (!commentUsername.dataset.eventBound) {
-      commentUsername.addEventListener('input', togglePasswordField);
-      commentUsername.dataset.eventBound = 'true';
-    }
+    // Add event listener for username and password input
+    [commentUsername, passwordInput].forEach(input => {
+      input.addEventListener('input', togglePasswordField);
+    });
 
     function copyDiscord() {
       navigator.clipboard.writeText("mrpo16").then(() => {
