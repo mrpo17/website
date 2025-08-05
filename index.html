@@ -20,6 +20,7 @@
       justify-content: center;
       align-items: center;
     }
+
     .container {
       text-align: center;
       z-index: 1;
@@ -28,6 +29,7 @@
       opacity: 0;
       transition: opacity 1.5s ease-out;
     }
+
     .song-title {
       position: fixed;
       top: 10px;
@@ -36,15 +38,26 @@
       font-size: 12px;
       color: #888888;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 5px;
       opacity: 0;
       transition: opacity 1.5s ease-out;
     }
-    .song-title .fa-volume-down {
+
+    .volume-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .volume-controls .fa-volume-down,
+    .volume-controls .fa-volume-mute {
       color: #888888;
       font-size: 14px;
+      cursor: pointer;
     }
+
     #volumeSlider {
       width: 100px;
       height: 4px;
@@ -52,9 +65,9 @@
       border-radius: 5px;
       outline: none;
       appearance: none;
-      opacity: 0;
       transition: opacity 1.5s ease-out;
     }
+
     #volumeSlider::-webkit-slider-thumb {
       appearance: none;
       width: 10px;
@@ -64,6 +77,7 @@
       cursor: pointer;
       border: none;
     }
+
     #volumeSlider::-moz-range-thumb {
       width: 10px;
       height: 10px;
@@ -72,10 +86,12 @@
       cursor: pointer;
       border: none;
     }
+
     #volumeSlider::-moz-range-track {
       background: #222;
       border-radius: 5px;
     }
+
     .moon {
       width: 100px;
       height: 100px;
@@ -86,6 +102,11 @@
       opacity: 0;
       transition: opacity 1.5s ease-out;
     }
+
+    .moon-fallback {
+      background: #888888;
+    }
+
     .username {
       color: #888888;
       margin: 20px 0;
@@ -93,6 +114,7 @@
       opacity: 0;
       transition: opacity 1.5s ease-out;
     }
+
     .links {
       margin-top: 20px;
       opacity: 0;
@@ -102,15 +124,24 @@
       justify-content: center;
       gap: 20px;
     }
+
     .links a {
       color: #888888;
       font-size: 22px;
       text-decoration: none;
       transition: transform 0.2s ease;
+      display: flex;
+      align-items: center;
     }
+
     .links a:hover {
       transform: scale(1.2);
     }
+
+    .links i {
+      font-size: 22px;
+    }
+
     #overlay {
       position: fixed;
       top: 0;
@@ -128,19 +159,24 @@
       opacity: 1;
       transition: opacity 1.5s ease-out;
     }
+
     #overlay.fade-out {
       opacity: 0;
       pointer-events: none;
     }
+
     audio {
       display: none;
     }
+
     .fade-in {
       opacity: 1;
     }
+
     .fade-out {
       opacity: 0;
     }
+
     #copyPopup {
       position: fixed;
       bottom: 20px;
@@ -153,37 +189,59 @@
       display: none;
       z-index: 11;
       font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    #copyPopup.show {
+      opacity: 1;
+    }
+
+    .roblox-icon {
+      filter: grayscale(100%) brightness(0.533);
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      vertical-align: middle;
     }
   </style>
 </head>
 <body>
   <div id="overlay">enter</div>
+
   <div class="song-title">
     <span>Los Seres de Proteccion - Las Energías</span>
-    <i class="fas fa-volume-down"></i>
-    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.15">
+    <div class="volume-controls">
+      <i id="volumeIcon" class="fas fa-volume-down"></i>
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.15">
+    </div>
   </div>
+
   <div class="container">
     <div class="moon"></div>
     <div class="username">mrpo</div>
     <div class="links">
-      <!-- Icons for social/media -->
-      <a href="https://www.roblox.com/users/418192832/profile" target="_blank" title="Roblox"><i class="fab fa-discord"></i></a>
+      <a href="javascript:void(0);" onclick="copyDiscord();" title="Discord"><i class="fab fa-discord"></i></a>
       <a href="https://x.com/OsuMrpo" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
       <a href="https://github.com/Mrpo16" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
       <a href="https://www.youtube.com/@mrpo" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
       <a href="https://steamcommunity.com/id/osumrpo" target="_blank" title="Steam"><i class="fab fa-steam"></i></a>
       <a href="https://www.tiktok.com/@mrpo16" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+      <a href="https://www.roblox.com/users/418192832/profile" target="_blank" title="Roblox"><img src="https://cdn.discordapp.com/attachments/1278875617609121863/1402076023234887711/1ac6c5d7cbf6c64b13923d7e258f34a3.jpg?ex=6892988d&is=6891470d&hm=898fc894276b9c62c98a561ccfb8d46a68c47c9f8f1aaa6cd2becf8a53abed05&" alt="Roblox" class="roblox-icon"></a>
     </div>
   </div>
+
   <div id="copyPopup"></div>
+
   <audio id="song" loop>
-    <source src="https://github.com/mrpo17/website/raw/refs/heads/main/ambient.mp3" type="audio/mpeg">
+    <source src="https://github.com/mrpo17/website/raw/refs/heads/main/ambient.mp3">
     Your browser does not support the audio element.
   </audio>
+
   <script>
     const audio = document.getElementById('song');
     const volumeSlider = document.getElementById('volumeSlider');
+    const volumeIcon = document.getElementById('volumeIcon');
     const overlay = document.getElementById('overlay');
     const container = document.querySelector('.container');
     const songTitle = document.querySelector('.song-title');
@@ -192,10 +250,22 @@
     const linksContainer = document.querySelector('.links');
     const copyPopup = document.getElementById('copyPopup');
 
+    // Fallback for moon image
+    moon.onerror = () => {
+      moon.classList.add('moon-fallback');
+    };
+
     audio.volume = 0.15;
     audio.muted = false;
+
     volumeSlider.addEventListener('input', () => {
       audio.volume = volumeSlider.value;
+    });
+
+    volumeIcon.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      volumeIcon.classList.toggle('fa-volume-down', !audio.muted);
+      volumeIcon.classList.toggle('fa-volume-mute', audio.muted);
     });
 
     overlay.addEventListener('click', () => {
@@ -204,7 +274,6 @@
         overlay.style.display = 'none';
         songTitle.style.display = 'flex';
         container.style.display = 'block';
-        volumeSlider.style.opacity = '1';
         container.classList.add('fade-in');
         songTitle.classList.add('fade-in');
         moon.classList.add('fade-in');
@@ -220,7 +289,11 @@
     function copyDiscord() {
       navigator.clipboard.writeText("mrpo16").then(() => {
         copyPopup.textContent = "discord copied";
+        copyPopup.classList.add('show');
         copyPopup.style.display = 'block';
+        setTimeout(() => {
+          copyPopup.classList.remove('show');
+        }, 1500);
         setTimeout(() => {
           copyPopup.style.display = 'none';
         }, 2000);
