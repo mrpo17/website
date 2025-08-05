@@ -305,15 +305,16 @@
     .comment-label {
       font-size: 12px;
       margin-right: 5px; /* Space between label and username */
-      animation: rainbow 5s infinite; /* Slower rainbow animation */
+      animation: rainbow 6s infinite linear; /* Slower and linear for smoothness */
     }
     @keyframes rainbow {
       0% { color: red; }
-      20% { color: orange; }
-      40% { color: yellow; }
-      60% { color: green; }
-      80% { color: blue; }
-      100% { color: purple; }
+      16.67% { color: orange; }
+      33.33% { color: yellow; }
+      50% { color: green; }
+      66.67% { color: blue; }
+      83.33% { color: purple; }
+      100% { color: red; } /* Smooth back to start */
     }
     .reopen-button {
       position: fixed;
