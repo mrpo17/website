@@ -333,13 +333,6 @@
     .reopen-button {
       display: none; /* Remove reopen button */
     }
-    /* New embed style */
-    .embed {
-      color: #888888;
-      font-size: 20px;
-      margin-top: 20px;
-      user-select: none;
-    }
   </style>
 </head>
 <body>
@@ -362,11 +355,8 @@
       <a href="https://steamcommunity.com/id/osumrpo" target="_blank" title="Steam"><i class="fab fa-steam"></i></a>
       <a href="https://www.tiktok.com/@mrpo16" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
       <a href="https://github.com/mrpo17/website/blob/main/1ac6c5d7cbf6c64b13923d7e258f34a3-removebg-preview.png?raw=true" target="_blank" title="Roblox">
-        <img src="https://github.com/mrpo17/website/blob/main/1ac6c5d7cbf6c64b13923d7e258f34a3-removebg-preview.png?raw=true" alt="New Roblox Icon" class="roblox-icon">
-      </a>
-    </div>
-    <div class="embed">
-      meow
+  <img src="https://github.com/mrpo17/website/blob/main/1ac6c5d7cbf6c64b13923d7e258f34a3-removebg-preview.png?raw=true" alt="New Roblox Icon" class="roblox-icon">
+</a>
     </div>
   </div>
   <div class="comment-section">
@@ -495,79 +485,127 @@
         passwordInput.classList.remove('visible');
         setTimeout(() => {
           passwordInput.style.display = 'none';
-          passwordInput.value = '';
-        }, 300);
+        }, 500);
       }
     }
-    function loadCaptcha() {
-      captchaImage.src = `https://captcha.osumrpo.com/api/captcha?${Date.now()}`;
-      captchaInput.value = '';
+    async function loadCaptcha() {
+      try {
+        captchaImage.src = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
+        const response = await fetch("https://api.osumrpo.com/captcha");
+        if (!response.ok) throw new Error("Failed to load CAPTCHA");
+        const { image, token } = await response.json();
+        let finalImage = image;
+        if (image && typeof image === 'string' && !image.startsWith('data:')) {
+          finalImage = `data:image/svg+xml;utf8,${encodeURIComponent(image)}`;
+        }
+        const img = new Image();
+        img.onload = () => {
+          captchaImage.src = finalImage;
+        };
+        img.onerror = () => {
+          throw new Error("Invalid image data received");
+        };
+        img.src = finalImage;
+        captchaToken = token;
+        captchaInput.value = "";
+      } catch (error) {
+        showError(error.message || "Error loading CAPTCHA");
+      }
     }
-    function submitComment() {
-      const usernameValue = commentUsername.value.trim();
-      const passwordValue = passwordInput.value.trim();
-      const commentValue = commentInput.value.trim();
-      const captchaValue = captchaInput.value.trim();
-      if (!usernameValue || !commentValue || !captchaValue) {
-        showError('Please fill all required fields.');
+    async function fetchComments() {
+      try {
+        const response = await fetch(`https://api.osumrpo.com/comments?page=1&limit=100`);
+        if (response.ok) {
+          const data = await response.json();
+          commentsCache = data;
+          return data;
+        }
+        throw new Error("Error fetching comments");
+      } catch (error) {
+        return { comments: [], totalPages: 1, currentPage: 1 };
+      }
+    }
+    async function submitComment() {
+      const username = commentUsername.value.trim() || 'Anonymous';
+      const content = commentInput.value.trim();
+      const password = passwordInput.value.trim();
+      const captchaSolution = captchaInput.value.trim();
+      if (!content || !captchaSolution || content.length > 100 || username.length > 25) {
+        commentInput.value = "";
+        showError("Invalid message.");
         return;
       }
-      const lowerUsername = usernameValue.toLowerCase();
-      if (reservedUsers.includes(lowerUsername) && passwordValue !== 'mrpogang') {
-        showError('Incorrect password for reserved user.');
+      const lastCommentTime = localStorage.getItem('lastCommentTime');
+      const currentTime = Date.now();
+      if (lastCommentTime && currentTime - lastCommentTime < 86400000) {
+        showError("You can only post one comment per day.");
         return;
       }
-      fetch('https://captcha.osumrpo.com/api/verify', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({captcha: captchaValue}),
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          addComment({username: usernameValue, comment: commentValue});
+      try {
+        const payload = { username, content, captchaSolution, captchaToken };
+        if (reservedUsers.includes(username.toLowerCase()) && password) payload.password = password;
+        const response = await fetch("https://api.osumrpo.com/comments", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (response.ok) {
+          localStorage.setItem('lastCommentTime', currentTime);
           commentInput.value = '';
           captchaInput.value = '';
-          loadCaptcha();
-          showSuccess('Comment sent!');
+          if (reservedUsers.includes(username.toLowerCase())) {
+            passwordInput.style.display = 'block';
+            setTimeout(() => {
+              passwordInput.classList.add('visible');
+            }, 10);
+          } else {
+            passwordInput.classList.remove('visible');
+            setTimeout(() => {
+              passwordInput.style.display = 'none';
+            }, 500);
+          }
+          await loadCaptcha();
+          await displayComments();
+          showSuccess("Comment posted successfully!");
         } else {
-          showError('Captcha failed. Try again.');
-          loadCaptcha();
+          const errorData = await response.json();
+          showError(errorData.message || "An unknown error occurred");
+          await loadCaptcha();
         }
-      })
-      .catch(() => {
-        showError('Server error. Try later.');
-        loadCaptcha();
-      });
-    }
-    function addComment({username, comment}) {
-      const lowerUsername = username.toLowerCase();
-      const isReserved = reservedUsers.includes(lowerUsername);
-      const commentEl = document.createElement('div');
-      commentEl.classList.add('comment');
-      const infoEl = document.createElement('div');
-      infoEl.classList.add('comment-info');
-      if (isReserved) {
-        const label = document.createElement('span');
-        label.classList.add('comment-label');
-        label.textContent = 'reserved user';
-        infoEl.appendChild(label);
+      } catch (error) {
+        showError("Network error.");
+        await loadCaptcha();
       }
-      const usernameSpan = document.createElement('span');
-      usernameSpan.classList.add('comment-username');
-      if (isReserved) usernameSpan.classList.add('reserved-user');
-      usernameSpan.textContent = username;
-      infoEl.appendChild(usernameSpan);
-      const contentEl = document.createElement('div');
-      contentEl.classList.add('comment-content');
-      contentEl.textContent = comment;
-      commentEl.appendChild(infoEl);
-      commentEl.appendChild(contentEl);
-      commentsList.appendChild(commentEl);
-      commentsList.scrollTop = commentsList.scrollHeight;
     }
-    // Load initial captcha on page load
-    loadCaptcha();
+    async function displayComments() {
+      commentsList.innerHTML = '<div class="comment">Loading...</div>';
+      try {
+        const data = await fetchComments();
+        commentsList.innerHTML = '';
+        data.comments.forEach((comment) => {
+          const commentDiv = document.createElement('div');
+          commentDiv.className = 'comment';
+          const isReserved = reservedUsers.includes(comment.username.toLowerCase()) ? 'reserved-user' : '';
+          let label = '';
+          if (comment.username.toLowerCase() === 'mrpo') {
+            label = '<span class="comment-label">[creator]</span>';
+          } else if (reservedUsers.includes(comment.username.toLowerCase())) {
+            label = '<span class="comment-label">[friend]</span>';
+          }
+          commentDiv.innerHTML = `<div class="comment-info">${label} <strong class="${isReserved}">${comment.username}</strong></div><div class="comment-content">${comment.content || comment.text}</div>`;
+          commentsList.appendChild(commentDiv);
+        });
+      } catch (error) {
+        showError("Failed to load comments.");
+      }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCaptcha();
+      displayComments();
+    });
+    [commentUsername, passwordInput].forEach(input => {
+      input.addEventListener('input', togglePasswordField);
+    });
   </script>
 </body>
 </html>
