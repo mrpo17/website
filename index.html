@@ -8,7 +8,6 @@
   <meta name="googlebot" content="notranslate">
   <title>mrpo</title>
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/mrpo17/website/main/5a9a60b73cc1a5c66d43d3988606ecc9-removebg-preview.png">
-  <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     body {
@@ -345,7 +344,7 @@
     </div>
   </div>
   <div class="comment-section">
-    <h3>Comments</h3> <!-- Removed the close button (X) -->
+    <h3>Comments</h3>
     <input type="text" class="comment-username" placeholder="username" maxlength="25" oninput="togglePasswordField()">
     <input type="password" class="password-input" placeholder="Password (for reserved users)" style="display: none;">
     <textarea class="comment-input" placeholder="Type your comment..." rows="3" maxlength="100"></textarea>
@@ -357,7 +356,7 @@
     <button class="comment-submit" onclick="submitComment()">send</button>
     <div class="comments-list" id="commentsList"></div>
   </div>
-  <div class="reopen-button" style="display: none;"></div> <!-- Hidden permanently -->
+  <div class="reopen-button" style="display: none;"></div>
   <div id="copyPopup"></div>
   <audio id="song" loop>
     <source src="https://github.com/mrpo17/website/raw/refs/heads/main/ambient.mp3">
@@ -382,19 +381,20 @@
     const captchaInput = document.querySelector('.captcha-input');
     const commentsList = document.getElementById('commentsList');
     let captchaToken = '';
-    const reservedUsers = ['mrpo', 'joehot', 'limit', 'moisesplays', 'melon', 'spaceyoda', 'nullbarral', 'cmrn']; // Updated reserved users
+    const reservedUsers = ['mrpo', 'joehot', 'limit', 'moisesplays', 'melon', 'spaceyoda', 'nullbarral', 'cmrn'];
     let commentsCache = {};
 
-    // Fallback for moon image
     moon.onerror = () => {
       moon.classList.add('moon-fallback');
     };
 
     audio.volume = 0.15;
     audio.muted = false;
+
     volumeSlider.addEventListener('input', () => {
       audio.volume = volumeSlider.value;
     });
+
     volumeIcon.addEventListener('click', () => {
       audio.muted = !audio.muted;
       volumeIcon.classList.toggle('fa-volume-down', !audio.muted);
@@ -402,11 +402,9 @@
     });
 
     overlay.addEventListener('click', () => {
-      console.log('Overlay clicked');
       overlay.classList.add('fade-out');
       setTimeout(() => {
-        console.log('Applying fade-in');
-        overlay.getBoundingClientRect(); // Force reflow
+        overlay.getBoundingClientRect();
         overlay.style.display = 'none';
         container.style.display = 'block';
         songTitle.style.display = 'flex';
@@ -419,26 +417,25 @@
         commentSection.classList.add('visible');
       }, 1500);
       setTimeout(() => {
-        console.log('Playing audio');
         audio.muted = false;
-        audio.play().catch(err => {
-          console.error('Audio play failed:', err.message);
-        });
+        audio.play().catch(() => {});
       }, 500);
     });
 
     function copyDiscord() {
-      copyPopup.textContent = "discord copied";
-      copyPopup.classList.add('show');
-      copyPopup.classList.add('success');
-      copyPopup.style.display = 'block';
-      setTimeout(() => {
-        copyPopup.classList.remove('show');
-      }, 1500);
-      setTimeout(() => {
-        copyPopup.style.display = 'none';
-        copyPopup.classList.remove('success');
-      }, 2000);
+      navigator.clipboard.writeText("mrpo16").then(() => {
+        copyPopup.textContent = "discord copied";
+        copyPopup.classList.add('show');
+        copyPopup.classList.add('success');
+        copyPopup.style.display = 'block';
+        setTimeout(() => {
+          copyPopup.classList.remove('show');
+        }, 1500);
+        setTimeout(() => {
+          copyPopup.style.display = 'none';
+          copyPopup.classList.remove('success');
+        }, 2000);
+      });
     }
 
     function showError(message) {
@@ -472,17 +469,14 @@
     function togglePasswordField() {
       const username = commentUsername.value.trim().toLowerCase();
       const password = passwordInput.value.trim();
-      console.log('Username input:', username, 'Password input:', password);
       const isVisible = passwordInput.classList.contains('visible');
 
       if (reservedUsers.includes(username) && !isVisible) {
-        console.log('Adding visible class to passwordInput');
         passwordInput.style.display = 'block';
         setTimeout(() => {
           passwordInput.classList.add('visible');
         }, 10);
       } else if (!reservedUsers.includes(username) && isVisible) {
-        console.log('Removing visible class from passwordInput');
         passwordInput.classList.remove('visible');
         setTimeout(() => {
           passwordInput.style.display = 'none';
@@ -492,42 +486,39 @@
 
     async function loadCaptcha() {
       try {
-        captchaImage.src = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="; // Loading placeholder
+        captchaImage.src = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
         const response = await fetch("https://api.osumrpo.com/captcha");
         if (!response.ok) throw new Error("Failed to load CAPTCHA");
         const { image, token } = await response.json();
-        console.log("CAPTCHA response:", { image, token }); // Debug the response
         let finalImage = image;
         if (image && typeof image === 'string' && !image.startsWith('data:')) {
           finalImage = `data:image/svg+xml;utf8,${encodeURIComponent(image)}`;
         }
         const img = new Image();
         img.onload = () => {
-          captchaImage.src = finalImage; // Set only if valid
+          captchaImage.src = finalImage;
         };
         img.onerror = () => {
           throw new Error("Invalid image data received");
         };
-        img.src = finalImage; // Trigger load check
-        captchaToken = token; // Store the token for submission
+        img.src = finalImage;
+        captchaToken = token;
         captchaInput.value = "";
       } catch (error) {
-        console.error("CAPTCHA load error:", error);
         showError(error.message || "Error loading CAPTCHA");
       }
     }
 
     async function fetchComments() {
       try {
-        const response = await fetch(`https://api.osumrpo.com/comments?page=1&limit=100`); // Fetch all comments
+        const response = await fetch(`https://api.osumrpo.com/comments?page=1&limit=100`);
         if (response.ok) {
           const data = await response.json();
-          commentsCache = data; // Store all comments
+          commentsCache = data;
           return data;
         }
         throw new Error("Error fetching comments");
       } catch (error) {
-        console.error("Error fetching comments:", error);
         return { comments: [], totalPages: 1, currentPage: 1 };
       }
     }
@@ -560,7 +551,6 @@
           localStorage.setItem('lastCommentTime', currentTime);
           commentInput.value = '';
           captchaInput.value = '';
-          // Re-evaluate password field visibility after submission
           if (reservedUsers.includes(username.toLowerCase())) {
             passwordInput.style.display = 'block';
             setTimeout(() => {
@@ -581,7 +571,6 @@
           await loadCaptcha();
         }
       } catch (error) {
-        console.error("Error posting comment:", error);
         showError("Network error.");
         await loadCaptcha();
       }
@@ -592,7 +581,7 @@
       try {
         const data = await fetchComments();
         commentsList.innerHTML = '';
-        data.comments.forEach((comment, index) => {
+        data.comments.forEach((comment) => {
           const commentDiv = document.createElement('div');
           commentDiv.className = 'comment';
           const isReserved = reservedUsers.includes(comment.username.toLowerCase()) ? 'reserved-user' : '';
@@ -606,39 +595,18 @@
           commentsList.appendChild(commentDiv);
         });
       } catch (error) {
-        console.error("Error loading comments:", error);
         showError("Failed to load comments.");
       }
     }
 
-    // Load CAPTCHA and comments on page load
     document.addEventListener('DOMContentLoaded', () => {
       loadCaptcha();
       displayComments();
     });
 
-    // Add event listener for username and password input
     [commentUsername, passwordInput].forEach(input => {
       input.addEventListener('input', togglePasswordField);
     });
-
-    function copyDiscord() {
-      navigator.clipboard.writeText("mrpo16").then(() => {
-        copyPopup.textContent = "discord copied";
-        copyPopup.classList.add('show');
-        copyPopup.classList.add('success');
-        copyPopup.style.display = 'block';
-        setTimeout(() => {
-          copyPopup.classList.remove('show');
-        }, 1500);
-        setTimeout(() => {
-          copyPopup.style.display = 'none';
-          copyPopup.classList.remove('success');
-        }, 2000);
-      }).catch(err => {
-        console.error('Failed to copy: ', err);
-      });
-    }
   </script>
 </body>
 </html>
