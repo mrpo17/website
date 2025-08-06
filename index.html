@@ -6,17 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="google" content="nottranslate">
   <meta name="googlebot" content="nottranslate">
-
-  <!-- Open Graph and Twitter Card metadata for embed preview -->
-  <meta property="og:title" content="meow" />
-  <meta property="og:description" content="meow" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://osumrpo.com/" />
-
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="meow" />
-  <meta name="twitter:description" content="meow" />
-
   <title>mrpo</title>
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/mrpo17/website/main/5a9a60b73cc1a5c66d43d3988606ecc9-removebg-preview.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -35,26 +24,12 @@
       align-items: center;
     }
     .container {
-      /* Show just "meow" centered and big */
       text-align: center;
       z-index: 1;
       flex-direction: column;
       align-items: center;
       opacity: 0;
       transition: opacity 1.5s ease-out;
-      font-size: 5rem;
-      font-weight: bold;
-      user-select: none;
-    }
-    .container.fade-in {
-      opacity: 1;
-    }
-    /* Hide all previous content inside container, we only want "meow" */
-    .container > *:not(.meow-text) {
-      display: none !important;
-    }
-    .meow-text {
-      color: #888888;
     }
     .song-title {
       position: fixed;
@@ -63,7 +38,7 @@
       transform: translateX(-50%);
       font-size: 12px;
       color: #888888;
-      display: none; /* Hide song title */
+      display: flex;
       flex-direction: column;
       align-items: center;
       gap: 5px;
@@ -71,19 +46,88 @@
       transition: opacity 1.5s ease-out;
     }
     .volume-controls {
-      display: none; /* Hide volume controls */
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .volume-controls .fa-volume-down,
+    .volume-controls .fa-volume-mute {
+      color: #888888;
+      font-size: 14px;
+      cursor: pointer;
     }
     #volumeSlider {
-      display: none; /* Hide volume slider */
+      width: 100px;
+      height: 4px;
+      background: #222;
+      border-radius: 5px;
+      outline: none;
+      appearance: none;
+      transition: opacity 1.5s ease-out;
+    }
+    #volumeSlider::-webkit-slider-thumb {
+      appearance: none;
+      width: 10px;
+      height: 10px;
+      background: #444;
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+    }
+    #volumeSlider::-moz-range-thumb {
+      width: 10px;
+      height: 10px;
+      background: #444;
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+    }
+    #volumeSlider::-moz-range-track {
+      background: #222;
+      border-radius: 5px;
     }
     .moon {
-      display: none; /* Hide moon image */
+      width: 100px;
+      height: 100px;
+      background: url('https://raw.githubusercontent.com/mrpo17/website/main/wp9955315.png') no-repeat center;
+      background-size: cover;
+      margin: 20px auto;
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 1.5s ease-out;
+    }
+    .moon-fallback {
+      background: #888888;
     }
     .username {
-      display: none; /* Hide username text */
+      color: #888888;
+      margin: 20px 0;
+      font-size: 24px;
+      opacity: 0;
+      transition: opacity 1.5s ease-out;
     }
     .links {
-      display: none; /* Hide social links */
+      margin-top: 20px;
+      opacity: 0;
+      transition: opacity 1.5s ease-out;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .links a {
+      color: #888888;
+      font-size: 22px;
+      text-decoration: none;
+      transition: transform 0.2s ease;
+      display: flex;
+      align-items: center;
+    }
+    .links a:hover {
+      transform: scale(1.2);
+    }
+    .links i {
+      font-size: 22px;
     }
     #overlay {
       position: fixed;
@@ -102,7 +146,6 @@
       opacity: 1;
       transition: opacity 1.5s ease-out;
       cursor: pointer;
-      user-select: none;
     }
     #overlay.fade-out {
       opacity: 0;
@@ -111,6 +154,43 @@
     }
     audio {
       display: none;
+    }
+    .fade-in {
+      opacity: 1;
+    }
+    .fade-out {
+      opacity: 0;
+    }
+    #copyPopup {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      border-radius: 5px;
+      display: none;
+      z-index: 11;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    #copyPopup.show {
+      opacity: 1;
+    }
+    #copyPopup.error {
+      background: rgba(0, 0, 0, 0.8);
+      color: #ff4d4d; /* Red for errors */
+    }
+    #copyPopup.success {
+      background: rgba(0, 64, 0, 0.8); /* Green for success */
+      color: #ffffff; /* White text for contrast */
+    }
+    .roblox-icon {
+      filter: grayscale(100%) brightness(0.533);
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      vertical-align: middle;
     }
     /* Comment Section Styles */
     .comment-section {
@@ -217,29 +297,29 @@
       border-bottom: 1px solid #444;
       word-wrap: break-word;
       display: flex;
-      align-items: center;
+      align-items: center; /* Align items vertically */
     }
     .comment-info {
-      min-width: 120px;
+      min-width: 120px; /* Fixed width for username and label */
       margin-right: 10px;
       display: flex;
-      align-items: center;
+      align-items: center; /* Center vertically */
     }
     .comment-content {
       flex: 1;
-      word-break: break-word;
+      word-break: break-word; /* Ensure text wraps cleanly */
     }
     .comment-label {
       font-size: 12px;
       margin-right: 5px;
       animation: rainbow 6s infinite linear;
-      display: inline-block;
-      vertical-align: middle;
+      display: inline-block; /* Keep inline for left alignment */
+      vertical-align: middle; /* Align vertically with username */
     }
     .reserved-user {
-      color: #800080;
-      text-align: left;
-      display: inline-block;
+      color: #800080; /* Purple for reserved users */
+      text-align: left; /* Align username to the left */
+      display: inline-block; /* Ensure it behaves as inline-block */
     }
     @keyframes rainbow {
       0% { color: red; }
@@ -251,48 +331,34 @@
       100% { color: red; }
     }
     .reopen-button {
-      display: none;
-    }
-    #copyPopup {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 10px 20px;
-      border-radius: 5px;
-      display: none;
-      z-index: 11;
-      font-size: 14px;
-      opacity: 0;
-      transition: opacity 0.5s ease-in-out;
-    }
-    #copyPopup.show {
-      opacity: 1;
-    }
-    #copyPopup.error {
-      background: rgba(0, 0, 0, 0.8);
-      color: #ff4d4d;
-    }
-    #copyPopup.success {
-      background: rgba(0, 64, 0, 0.8);
-      color: #ffffff;
-    }
-    .roblox-icon {
-      filter: grayscale(100%) brightness(0.533);
-      width: 28px;
-      height: 28px;
-      object-fit: contain;
-      vertical-align: middle;
+      display: none; /* Remove reopen button */
     }
   </style>
 </head>
 <body>
   <div id="overlay">enter</div>
-  <div class="container">
-    <div class="meow-text">meow</div>
-    <!-- All other original container content is hidden by CSS -->
+  <div class="song-title">
+    <span translate="no">Los Seres de Proteccion - Las Energías</span>
+    <div class="volume-controls">
+      <i id="volumeIcon" class="fas fa-volume-down"></i>
+      <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.15">
+    </div>
   </div>
-  
+  <div class="container">
+    <div class="moon"></div>
+    <div class="username">mrpo</div>
+    <div class="links">
+      <a href="javascript:void(0);" onclick="copyDiscord();" title="Discord"><i class="fab fa-discord"></i></a>
+      <a href="https://x.com/OsuMrpo" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
+      <a href="https://github.com/Mrpo16" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+      <a href="https://www.youtube.com/@mrpo" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+      <a href="https://steamcommunity.com/id/osumrpo" target="_blank" title="Steam"><i class="fab fa-steam"></i></a>
+      <a href="https://www.tiktok.com/@mrpo16" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
+      <a href="https://github.com/mrpo17/website/blob/main/1ac6c5d7cbf6c64b13923d7e258f34a3-removebg-preview.png?raw=true" target="_blank" title="Roblox">
+  <img src="https://github.com/mrpo17/website/blob/main/1ac6c5d7cbf6c64b13923d7e258f34a3-removebg-preview.png?raw=true" alt="New Roblox Icon" class="roblox-icon">
+</a>
+    </div>
+  </div>
   <div class="comment-section">
     <h3>Comments</h3>
     <input type="text" class="comment-username" placeholder="username" maxlength="25" oninput="togglePasswordField()">
@@ -306,19 +372,22 @@
     <button class="comment-submit" onclick="submitComment()">send</button>
     <div class="comments-list" id="commentsList"></div>
   </div>
-  
   <div class="reopen-button" style="display: none;"></div>
   <div id="copyPopup"></div>
-
   <audio id="song" loop>
     <source src="https://github.com/mrpo17/website/raw/refs/heads/main/ambient.mp3">
     Your browser does not support the audio element.
   </audio>
-
   <script>
     const audio = document.getElementById('song');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeIcon = document.getElementById('volumeIcon');
     const overlay = document.getElementById('overlay');
     const container = document.querySelector('.container');
+    const songTitle = document.querySelector('.song-title');
+    const moon = document.querySelector('.moon');
+    const username = document.querySelector('.username');
+    const linksContainer = document.querySelector('.links');
     const copyPopup = document.getElementById('copyPopup');
     const commentSection = document.querySelector('.comment-section');
     const commentUsername = document.querySelector('.comment-username');
@@ -327,19 +396,34 @@
     const captchaImage = document.querySelector('.captcha-image');
     const captchaInput = document.querySelector('.captcha-input');
     const commentsList = document.getElementById('commentsList');
-
     let captchaToken = '';
     const reservedUsers = ['mrpo', 'joehot', 'limit', 'moisesplays', 'melon', 'spaceyoda', 'nullbarral', 'cmrn'];
     let commentsCache = {};
-
+    moon.onerror = () => {
+      moon.classList.add('moon-fallback');
+    };
     audio.volume = 0.15;
     audio.muted = false;
-
+    volumeSlider.addEventListener('input', () => {
+      audio.volume = volumeSlider.value;
+    });
+    volumeIcon.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      volumeIcon.classList.toggle('fa-volume-down', !audio.muted);
+      volumeIcon.classList.toggle('fa-volume-mute', audio.muted);
+    });
     overlay.addEventListener('click', () => {
       overlay.classList.add('fade-out');
       setTimeout(() => {
         overlay.style.display = 'none';
+        container.style.display = 'block';
+        songTitle.style.display = 'flex';
+        commentSection.style.display = 'flex';
         container.classList.add('fade-in');
+        songTitle.classList.add('fade-in');
+        moon.classList.add('fade-in');
+        username.classList.add('fade-in');
+        linksContainer.classList.add('fade-in');
         commentSection.classList.add('visible');
       }, 1500);
       setTimeout(() => {
@@ -347,54 +431,63 @@
         audio.play().catch(() => {});
       }, 500);
     });
-
     function copyDiscord() {
       navigator.clipboard.writeText("mrpo16").then(() => {
         copyPopup.textContent = "discord copied";
-        copyPopup.classList.add('show', 'success');
+        copyPopup.classList.add('show');
+        copyPopup.classList.add('success');
         copyPopup.style.display = 'block';
-        setTimeout(() => copyPopup.classList.remove('show'), 1500);
+        setTimeout(() => {
+          copyPopup.classList.remove('show');
+        }, 1500);
         setTimeout(() => {
           copyPopup.style.display = 'none';
           copyPopup.classList.remove('success');
         }, 2000);
       });
     }
-
     function showError(message) {
       copyPopup.textContent = message;
-      copyPopup.classList.add('show', 'error');
+      copyPopup.classList.add('show');
+      copyPopup.classList.add('error');
       copyPopup.style.display = 'block';
-      setTimeout(() => copyPopup.classList.remove('show'), 3000);
+      setTimeout(() => {
+        copyPopup.classList.remove('show');
+      }, 3000);
       setTimeout(() => {
         copyPopup.style.display = 'none';
         copyPopup.classList.remove('error');
       }, 3500);
     }
-
     function showSuccess(message) {
       copyPopup.textContent = message;
-      copyPopup.classList.add('show', 'success');
+      copyPopup.classList.add('show');
+      copyPopup.classList.add('success');
       copyPopup.style.display = 'block';
-      setTimeout(() => copyPopup.classList.remove('show'), 3000);
+      setTimeout(() => {
+        copyPopup.classList.remove('show');
+      }, 3000);
       setTimeout(() => {
         copyPopup.style.display = 'none';
         copyPopup.classList.remove('success');
       }, 3500);
     }
-
     function togglePasswordField() {
       const username = commentUsername.value.trim().toLowerCase();
+      const password = passwordInput.value.trim();
       const isVisible = passwordInput.classList.contains('visible');
       if (reservedUsers.includes(username) && !isVisible) {
         passwordInput.style.display = 'block';
-        setTimeout(() => passwordInput.classList.add('visible'), 10);
+        setTimeout(() => {
+          passwordInput.classList.add('visible');
+        }, 10);
       } else if (!reservedUsers.includes(username) && isVisible) {
         passwordInput.classList.remove('visible');
-        setTimeout(() => passwordInput.style.display = 'none', 500);
+        setTimeout(() => {
+          passwordInput.style.display = 'none';
+        }, 500);
       }
     }
-
     async function loadCaptcha() {
       try {
         captchaImage.src = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
@@ -419,7 +512,6 @@
         showError(error.message || "Error loading CAPTCHA");
       }
     }
-
     async function fetchComments() {
       try {
         const response = await fetch(`https://api.osumrpo.com/comments?page=1&limit=100`);
@@ -433,26 +525,22 @@
         return { comments: [], totalPages: 1, currentPage: 1 };
       }
     }
-
     async function submitComment() {
       const username = commentUsername.value.trim() || 'Anonymous';
       const content = commentInput.value.trim();
       const password = passwordInput.value.trim();
       const captchaSolution = captchaInput.value.trim();
-
       if (!content || !captchaSolution || content.length > 100 || username.length > 25) {
         commentInput.value = "";
         showError("Invalid message.");
         return;
       }
-
       const lastCommentTime = localStorage.getItem('lastCommentTime');
       const currentTime = Date.now();
       if (lastCommentTime && currentTime - lastCommentTime < 86400000) {
         showError("You can only post one comment per day.");
         return;
       }
-
       try {
         const payload = { username, content, captchaSolution, captchaToken };
         if (reservedUsers.includes(username.toLowerCase()) && password) payload.password = password;
@@ -465,65 +553,59 @@
           localStorage.setItem('lastCommentTime', currentTime);
           commentInput.value = '';
           captchaInput.value = '';
-          if (passwordInput.classList.contains('visible')) {
-            passwordInput.value = '';
+          if (reservedUsers.includes(username.toLowerCase())) {
+            passwordInput.style.display = 'block';
+            setTimeout(() => {
+              passwordInput.classList.add('visible');
+            }, 10);
+          } else {
+            passwordInput.classList.remove('visible');
+            setTimeout(() => {
+              passwordInput.style.display = 'none';
+            }, 500);
           }
-          showSuccess("Comment posted");
-          loadCaptcha();
-          refreshComments();
+          await loadCaptcha();
+          await displayComments();
+          showSuccess("Comment posted successfully!");
         } else {
           const errorData = await response.json();
-          showError(errorData.message || "Error posting comment");
+          showError(errorData.message || "An unknown error occurred");
+          await loadCaptcha();
         }
       } catch (error) {
-        showError(error.message || "Network error");
+        showError("Network error.");
+        await loadCaptcha();
       }
     }
-
-    function renderComments(comments) {
-      commentsList.innerHTML = "";
-      if (!comments.length) {
-        commentsList.innerHTML = "<p>No comments yet.</p>";
-        return;
+    async function displayComments() {
+      commentsList.innerHTML = '<div class="comment">Loading...</div>';
+      try {
+        const data = await fetchComments();
+        commentsList.innerHTML = '';
+        data.comments.forEach((comment) => {
+          const commentDiv = document.createElement('div');
+          commentDiv.className = 'comment';
+          const isReserved = reservedUsers.includes(comment.username.toLowerCase()) ? 'reserved-user' : '';
+          let label = '';
+          if (comment.username.toLowerCase() === 'mrpo') {
+            label = '<span class="comment-label">[creator]</span>';
+          } else if (reservedUsers.includes(comment.username.toLowerCase())) {
+            label = '<span class="comment-label">[friend]</span>';
+          }
+          commentDiv.innerHTML = `<div class="comment-info">${label} <strong class="${isReserved}">${comment.username}</strong></div><div class="comment-content">${comment.content || comment.text}</div>`;
+          commentsList.appendChild(commentDiv);
+        });
+      } catch (error) {
+        showError("Failed to load comments.");
       }
-      comments.forEach(({ username, content, reserved }) => {
-        const commentDiv = document.createElement('div');
-        commentDiv.className = 'comment';
-
-        const infoDiv = document.createElement('div');
-        infoDiv.className = 'comment-info';
-
-        const labelSpan = document.createElement('span');
-        labelSpan.className = 'comment-label';
-        labelSpan.textContent = reserved ? 'Reserved' : 'User';
-
-        const userSpan = document.createElement('span');
-        userSpan.className = reserved ? 'reserved-user' : '';
-        userSpan.textContent = username;
-
-        infoDiv.appendChild(labelSpan);
-        infoDiv.appendChild(userSpan);
-
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'comment-content';
-        contentDiv.textContent = content;
-
-        commentDiv.appendChild(infoDiv);
-        commentDiv.appendChild(contentDiv);
-
-        commentsList.appendChild(commentDiv);
-      });
     }
-
-    async function refreshComments() {
-      const data = await fetchComments();
-      renderComments(data.comments);
-    }
-
-    // Initialize
-    loadCaptcha();
-    refreshComments();
-
+    document.addEventListener('DOMContentLoaded', () => {
+      loadCaptcha();
+      displayComments();
+    });
+    [commentUsername, passwordInput].forEach(input => {
+      input.addEventListener('input', togglePasswordField);
+    });
   </script>
 </body>
 </html>
