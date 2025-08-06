@@ -6,6 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="google" content="nottranslate">
   <meta name="googlebot" content="nottranslate">
+
+  <!-- Open Graph and Twitter Card metadata for embed preview -->
+  <meta property="og:title" content="meow" />
+  <meta property="og:description" content="meow" />
+  <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/616/616408.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://osumrpo.com/" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="meow" />
+  <meta name="twitter:description" content="meow" />
+  <meta name="twitter:image" content="https://cdn-icons-png.flaticon.com/512/616/616408.png" />
+
   <title>mrpo</title>
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/mrpo17/website/main/5a9a60b73cc1a5c66d43d3988606ecc9-removebg-preview.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -179,11 +192,11 @@
     }
     #copyPopup.error {
       background: rgba(0, 0, 0, 0.8);
-      color: #ff4d4d; /* Red for errors */
+      color: #ff4d4d;
     }
     #copyPopup.success {
-      background: rgba(0, 64, 0, 0.8); /* Green for success */
-      color: #ffffff; /* White text for contrast */
+      background: rgba(0, 64, 0, 0.8);
+      color: #ffffff;
     }
     .roblox-icon {
       filter: grayscale(100%) brightness(0.533);
@@ -208,8 +221,8 @@
       flex-direction: column;
       overflow-y: auto;
       transition: opacity 1.5s ease-out;
-      opacity: 0; /* Start hidden */
-      pointer-events: none; /* Start non-interactive */
+      opacity: 0;
+      pointer-events: none;
     }
     .comment-section.visible {
       opacity: 1;
@@ -223,7 +236,7 @@
       align-items: center;
     }
     .close-button {
-      display: none; /* Remove the X button */
+      display: none;
     }
     .comment-username, .password-input, .comment-input, .captcha-input {
       width: 100%;
@@ -297,29 +310,29 @@
       border-bottom: 1px solid #444;
       word-wrap: break-word;
       display: flex;
-      align-items: center; /* Align items vertically */
+      align-items: center;
     }
     .comment-info {
-      min-width: 120px; /* Fixed width for username and label */
+      min-width: 120px;
       margin-right: 10px;
       display: flex;
-      align-items: center; /* Center vertically */
+      align-items: center;
     }
     .comment-content {
       flex: 1;
-      word-break: break-word; /* Ensure text wraps cleanly */
+      word-break: break-word;
     }
     .comment-label {
       font-size: 12px;
       margin-right: 5px;
       animation: rainbow 6s infinite linear;
-      display: inline-block; /* Keep inline for left alignment */
-      vertical-align: middle; /* Align vertically with username */
+      display: inline-block;
+      vertical-align: middle;
     }
     .reserved-user {
-      color: #800080; /* Purple for reserved users */
-      text-align: left; /* Align username to the left */
-      display: inline-block; /* Ensure it behaves as inline-block */
+      color: #800080;
+      text-align: left;
+      display: inline-block;
     }
     @keyframes rainbow {
       0% { color: red; }
@@ -331,7 +344,7 @@
       100% { color: red; }
     }
     .reopen-button {
-      display: none; /* Remove reopen button */
+      display: none;
     }
   </style>
 </head>
@@ -355,8 +368,8 @@
       <a href="https://steamcommunity.com/id/osumrpo" target="_blank" title="Steam"><i class="fab fa-steam"></i></a>
       <a href="https://www.tiktok.com/@mrpo16" target="_blank" title="TikTok"><i class="fab fa-tiktok"></i></a>
       <a href="https://github.com/mrpo17/website/blob/main/1ac6c5d7cbf6c64b13923d7e258f34a3-removebg-preview.png?raw=true" target="_blank" title="Roblox">
-  <img src="https://github.com/mrpo17/website/blob/main/1ac6c5d7cbf6c64b13923d7e258f34a3-removebg-preview.png?raw=true" alt="New Roblox Icon" class="roblox-icon">
-</a>
+        <img src="https://github.com/mrpo17/website/blob/main/1ac6c5d7cbf6c64b13923d7e258f34a3-removebg-preview.png?raw=true" alt="New Roblox Icon" class="roblox-icon">
+      </a>
     </div>
   </div>
   <div class="comment-section">
@@ -416,7 +429,7 @@
       overlay.classList.add('fade-out');
       setTimeout(() => {
         overlay.style.display = 'none';
-        container.style.display = 'block';
+        container.style.display = 'flex';
         songTitle.style.display = 'flex';
         commentSection.style.display = 'flex';
         container.classList.add('fade-in');
@@ -474,7 +487,6 @@
     }
     function togglePasswordField() {
       const username = commentUsername.value.trim().toLowerCase();
-      const password = passwordInput.value.trim();
       const isVisible = passwordInput.classList.contains('visible');
       if (reservedUsers.includes(username) && !isVisible) {
         passwordInput.style.display = 'block';
