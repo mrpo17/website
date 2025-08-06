@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" translate="no" class="notranslate">
+<html lang="en" translate="no" class="nottranslate">
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="Content-Language" content="en">
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="google" content="notranslate">
-  <meta name="googlebot" content="notranslate">
+  <meta name="google" content="nottranslate">
+  <meta name="googlebot" content="nottranslate">
   <title>mrpo</title>
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/mrpo17/website/main/5a9a60b73cc1a5c66d43d3988606ecc9-removebg-preview.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -197,7 +197,7 @@
       position: fixed;
       top: 0;
       right: 0;
-      width: 300px;
+      width: 500px;
       height: 100vh;
       background: #111;
       color: #888888;
@@ -293,19 +293,25 @@
       max-height: calc(100vh - 200px);
     }
     .comment {
-      padding: 10px;
+      padding: 10px 0;
       border-bottom: 1px solid #444;
       word-wrap: break-word;
       display: flex;
       align-items: flex-start;
+      width: 100%; /* Ensure the border spans the full width */
     }
-    .reserved-user {
-      color: #800080; /* Purple for reserved users */
+    .comment-content {
+      display: flex;
+      flex-direction: column;
+      margin-left: 10px; /* Consistent spacing for content */
     }
     .comment-label {
       font-size: 12px;
       margin-right: 5px;
       animation: rainbow 6s infinite linear;
+    }
+    .reserved-user {
+      color: #800080; /* Purple for reserved users */
     }
     @keyframes rainbow {
       0% { color: red; }
@@ -593,7 +599,7 @@
           } else if (reservedUsers.includes(comment.username.toLowerCase())) {
             label = '<span class="comment-label">[friend]</span>';
           }
-          commentDiv.innerHTML = `${label} <strong class="${isReserved}">${comment.username}</strong>: ${comment.content || comment.text}`;
+          commentDiv.innerHTML = `${label} <strong class="${isReserved}">${comment.username}</strong><div class="comment-content">${comment.content || comment.text}</div>`;
           commentsList.appendChild(commentDiv);
         });
       } catch (error) {
