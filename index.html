@@ -297,21 +297,30 @@
       border-bottom: 1px solid #444;
       word-wrap: break-word;
       display: flex;
-      align-items: flex-start;
-      width: 100%; /* Ensure the border spans the full width */
+      align-items: center; /* Align items vertically */
+    }
+    .comment-info {
+      min-width: 120px; /* Fixed width for username and label */
+      margin-right: 10px;
+      display: flex;
+      align-items: center; /* Center vertically */
     }
     .comment-content {
-      display: flex;
-      flex-direction: column;
-      margin-left: 10px; /* Consistent spacing for content */
+      flex: 1;
+      word-break: break-word; /* Ensure text wraps cleanly */
     }
     .comment-label {
       font-size: 12px;
       margin-right: 5px;
       animation: rainbow 6s infinite linear;
+      display: inline-block; /* Keep inline for left alignment */
+      vertical-align: middle; /* Align vertically with username */
     }
     .reserved-user {
       color: #800080; /* Purple for reserved users */
+      text-align: center; /* Center the username */
+      display: inline-block; /* Ensure it behaves as inline-block for centering */
+      width: 100%; /* Take full width of .comment-info for centering */
     }
     @keyframes rainbow {
       0% { color: red; }
@@ -391,28 +400,22 @@
     let captchaToken = '';
     const reservedUsers = ['mrpo', 'joehot', 'limit', 'moisesplays', 'melon', 'spaceyoda', 'nullbarral', 'cmrn'];
     let commentsCache = {};
-
     moon.onerror = () => {
       moon.classList.add('moon-fallback');
     };
-
     audio.volume = 0.15;
     audio.muted = false;
-
     volumeSlider.addEventListener('input', () => {
       audio.volume = volumeSlider.value;
     });
-
     volumeIcon.addEventListener('click', () => {
       audio.muted = !audio.muted;
       volumeIcon.classList.toggle('fa-volume-down', !audio.muted);
       volumeIcon.classList.toggle('fa-volume-mute', audio.muted);
     });
-
     overlay.addEventListener('click', () => {
       overlay.classList.add('fade-out');
       setTimeout(() => {
-        overlay.getBoundingClientRect();
         overlay.style.display = 'none';
         container.style.display = 'block';
         songTitle.style.display = 'flex';
@@ -429,7 +432,6 @@
         audio.play().catch(() => {});
       }, 500);
     });
-
     function copyDiscord() {
       navigator.clipboard.writeText("mrpo16").then(() => {
         copyPopup.textContent = "discord copied";
@@ -445,7 +447,6 @@
         }, 2000);
       });
     }
-
     function showError(message) {
       copyPopup.textContent = message;
       copyPopup.classList.add('show');
@@ -459,7 +460,6 @@
         copyPopup.classList.remove('error');
       }, 3500);
     }
-
     function showSuccess(message) {
       copyPopup.textContent = message;
       copyPopup.classList.add('show');
@@ -473,12 +473,10 @@
         copyPopup.classList.remove('success');
       }, 3500);
     }
-
     function togglePasswordField() {
       const username = commentUsername.value.trim().toLowerCase();
       const password = passwordInput.value.trim();
       const isVisible = passwordInput.classList.contains('visible');
-
       if (reservedUsers.includes(username) && !isVisible) {
         passwordInput.style.display = 'block';
         setTimeout(() => {
@@ -491,7 +489,6 @@
         }, 500);
       }
     }
-
     async function loadCaptcha() {
       try {
         captchaImage.src = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
@@ -516,7 +513,6 @@
         showError(error.message || "Error loading CAPTCHA");
       }
     }
-
     async function fetchComments() {
       try {
         const response = await fetch(`https://api.osumrpo.com/comments?page=1&limit=100`);
@@ -530,7 +526,6 @@
         return { comments: [], totalPages: 1, currentPage: 1 };
       }
     }
-
     async function submitComment() {
       const username = commentUsername.value.trim() || 'Anonymous';
       const content = commentInput.value.trim();
@@ -583,7 +578,6 @@
         await loadCaptcha();
       }
     }
-
     async function displayComments() {
       commentsList.innerHTML = '<div class="comment">Loading...</div>';
       try {
@@ -599,19 +593,17 @@
           } else if (reservedUsers.includes(comment.username.toLowerCase())) {
             label = '<span class="comment-label">[friend]</span>';
           }
-          commentDiv.innerHTML = `${label} <strong class="${isReserved}">${comment.username}</strong><div class="comment-content">${comment.content || comment.text}</div>`;
+          commentDiv.innerHTML = `<div class="comment-info">${label} <strong class="${isReserved}">${comment.username}</strong></div><div class="comment-content">${comment.content || comment.text}</div>`;
           commentsList.appendChild(commentDiv);
         });
       } catch (error) {
         showError("Failed to load comments.");
       }
     }
-
     document.addEventListener('DOMContentLoaded', () => {
       loadCaptcha();
       displayComments();
     });
-
     [commentUsername, passwordInput].forEach(input => {
       input.addEventListener('input', togglePasswordField);
     });
