@@ -344,6 +344,24 @@
     .reopen-button {
       display: none;
     }
+    /* View Count Styles */
+    #view-count {
+      position: fixed;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.7);
+      color: #888888;
+      padding: 10px 15px;
+      border-radius: 5px;
+      font-size: 16px;
+      z-index: 100;
+      transition: opacity 0.5s ease-out;
+      opacity: 0;
+    }
+    #view-count.fade-in {
+      opacity: 1;
+    }
     /* Mobile Responsiveness */
     @media (max-width: 768px) {
       body {
@@ -429,6 +447,13 @@
         padding: 8px;
         font-size: 12px;
       }
+      #view-count {
+        left: 5px;
+        top: 10px;
+        transform: none;
+        padding: 8px 12px;
+        font-size: 14px;
+      }
     }
   </style>
 </head>
@@ -478,6 +503,7 @@
     <source src="https://github.com/mrpo17/website/raw/refs/heads/main/ambient.mp3">
     Your browser does not support the audio element.
   </audio>
+  <div id="view-count">Views: 0</div>
   <script>
     const audio = document.getElementById('song');
     const volumeSlider = document.getElementById('volumeSlider');
@@ -485,7 +511,7 @@
     const overlay = document.getElementById('overlay');
     const container = document.querySelector('.container');
     const songTitle = document.querySelector('.song-title');
-    const moon = document.querySelector('.moon'); // Fixed typo from .queryselector to .querySelector
+    const moon = document.querySelector('.moon');
     const username = document.querySelector('.username');
     const linksContainer = document.querySelector('.links');
     const copyPopup = document.getElementById('copyPopup');
@@ -496,14 +522,33 @@
     const captchaImage = document.querySelector('.captcha-image');
     const captchaInput = document.querySelector('.captcha-input');
     const commentsList = document.getElementById('commentsList');
+    const viewCount = document.getElementById('view-count');
     let captchaToken = '';
     const reservedUsers = ['mrpo', 'joehot', 'limit', 'moisesplays', 'melon', 'spaceyoda', 'nullbarral', 'cmrn'];
     let commentsCache = '';
+
     moon.onerror = () => {
       moon.classList.add('moon-fallback');
     };
     audio.volume = 0.15;
     audio.muted = false;
+
+    // Fetch and update view count
+    function updateViewCount() {
+      fetch('https://api.osumrpo.com/views')
+        .then(response => response.json())
+        .then(data => {
+          viewCount.textContent = `Views: ${data.count}`;
+          viewCount.classList.add('fade-in');
+        })
+        .catch(error => console.error('Error fetching view count:', error));
+    }
+
+    // Initial view count fetch on page load
+    window.addEventListener('load', () => {
+      updateViewCount();
+    });
+
     volumeSlider.addEventListener('input', () => {
       audio.volume = volumeSlider.value;
     });
@@ -513,8 +558,8 @@
       volumeIcon.classList.toggle('fa-volume-mute', audio.muted);
     });
     overlay.addEventListener('click', () => {
-      console.log('Overlay clicked'); // Debug log to confirm click
-      if (overlay) { // Added check to ensure overlay exists
+      console.log('Overlay clicked');
+      if (overlay) {
         console.log('Overlay element found');
         overlay.classList.add('fade-out');
         setTimeout(() => {
@@ -525,6 +570,7 @@
           moon.classList.add('fade-in');
           username.classList.add('fade-in');
           linksContainer.classList.add('fade-in');
+          updateViewCount(); // Update view count on click
         }, 1500);
         setTimeout(() => {
           audio.muted = false;
