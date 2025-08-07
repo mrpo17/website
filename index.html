@@ -249,10 +249,10 @@
       font-weight: bold;
       color: #999999;
     }
-    .comment-username, .password-input, .comment-input, .captcha-input {
+    .comment-username, .password-input, .comment-input {
       width: 100%;
-      padding: 12px;
-      margin-bottom: 12px;
+      padding: 5px; /* Simplified for alignment */
+      margin: 0 0 12px 0; /* Remove default margins */
       background: #222;
       border: 1px solid #333;
       border-radius: 8px;
@@ -260,8 +260,11 @@
       box-sizing: border-box;
       font-size: min(3.5vw, 14px); /* Scale font size */
       transition: border-color 0.3s ease;
+      height: 30px; /* Simplified height */
+      line-height: normal;
+      vertical-align: middle;
     }
-    .comment-username:focus, .password-input:focus, .comment-input:focus, .captcha-input:focus {
+    .comment-username:focus, .password-input:focus, .comment-input:focus {
       border-color: #444;
       background: #2a2a2a;
       outline: none;
@@ -284,24 +287,50 @@
     .captcha-container {
       display: flex;
       align-items: center;
-      gap: 12px; /* Original gap */
+      gap: 8px;
       margin-bottom: 12px;
+      width: 100%;
     }
     .captcha-image {
-      max-width: min(20vw, 80px); /* Scale image */
-      height: auto;
+      height: 30px; /* Match input height */
+      width: auto;
       filter: invert(1) hue-rotate(180deg);
       border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .captcha-input {
+      flex: 1;
+      padding: 5px;
+      margin: 0;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #777777;
+      box-sizing: border-box;
+      font-size: min(3.5vw, 14px);
+      transition: border-color 0.3s ease;
+      height: 30px;
+      line-height: normal;
+    }
+    .captcha-input:focus {
+      border-color: #444;
+      background: #2a2a2a;
+      outline: none;
     }
     .captcha-reload {
       background: #333;
       border: none;
-      padding: 12px;
+      padding: 5px 8px;
+      margin: 0;
       color: #999999;
       border-radius: 8px;
       cursor: pointer;
-      font-size: min(3.5vw, 14px); /* Match comment-submit */
+      font-size: min(3.5vw, 14px);
       transition: background 0.3s ease, transform 0.2s ease;
+      height: 30px;
+      line-height: normal;
+      box-sizing: border-box;
+      flex-shrink: 0;
     }
     .captcha-reload:hover {
       background: #444;
@@ -310,15 +339,18 @@
     .comment-submit {
       background: #333;
       border: none;
-      padding: 12px;
+      padding: 5px;
       color: #999999;
       border-radius: 8px;
       cursor: pointer;
       font-size: min(3.5vw, 14px); /* Scale font size */
       font-weight: bold;
       transition: background 0.3s ease, transform 0.2s ease;
-      min-width: 44px; /* Ensure touch target size */
-      min-height: 44px;
+      height: 30px; /* Match other inputs */
+      line-height: normal;
+      margin: 0 0 12px 0;
+      min-height: 44px; /* Ensure touch target */
+      min-width: 44px; /* Ensure touch target */
     }
     .comment-submit:hover {
       background: #444;
@@ -455,10 +487,10 @@
         opacity: 1;
         pointer-events: auto;
       }
-      .comment-username, .password-input, .comment-input, .captcha-input {
+      .comment-username, .password-input, .comment-input {
         width: 100%;
-        padding: min(1.5vw, 6px); /* Reduced padding */
-        margin-bottom: min(2vw, 8px); /* Reduced margin */
+        padding: min(0.5vw, 3px); /* Fine-tuned for alignment */
+        margin: 0 0 min(2vw, 8px) 0; /* Remove default margins */
         background: #222;
         border: 1px solid #333;
         border-radius: 8px;
@@ -466,6 +498,9 @@
         box-sizing: border-box;
         font-size: min(3.5vw, 14px); /* Scale font size */
         transition: border-color 0.3s ease;
+        height: min(6vw, 26px); /* Simplified height */
+        line-height: normal;
+        vertical-align: middle;
       }
       .comment-input {
         height: min(12vw, 50px); /* Reduced height */
@@ -474,34 +509,76 @@
       .captcha-container {
         display: flex;
         align-items: center;
-        gap: 8px; /* Reduced gap */
-        margin-bottom: min(2vw, 8px); /* Reduced margin */
+        gap: 6px;
+        margin-bottom: min(2vw, 8px);
+        width: 100%;
       }
       .captcha-image {
-        max-width: 100%;
-        height: auto;
+        height: min(6vw, 26px); /* Match mobile input height */
+        width: auto;
         filter: invert(1) hue-rotate(180deg);
         border-radius: 4px;
+        flex-shrink: 0;
+      }
+      .captcha-input {
+        flex: 1;
+        padding: min(0.5vw, 3px);
+        margin: 0;
+        background: #222;
+        border: 1px solid #333;
+        border-radius: 8px;
+        color: #777777;
+        box-sizing: border-box;
+        font-size: min(3.5vw, 14px);
+        transition: border-color 0.3s ease;
+        height: min(6vw, 26px);
+        line-height: normal;
+      }
+      .captcha-input:focus {
+        border-color: #444;
+        background: #2a2a2a;
+        outline: none;
       }
       .captcha-reload {
         background: #333;
         border: none;
-        padding: min(2vw, 8px); /* Match comment-submit */
+        padding: min(0.5vw, 3px) 6px;
+        margin: 0;
         color: #999999;
         border-radius: 8px;
         cursor: pointer;
-        font-size: min(3vw, 12px); /* Scale font size */
+        font-size: min(3.5vw, 14px);
         transition: background 0.3s ease, transform 0.2s ease;
+        height: min(6vw, 26px);
+        line-height: normal;
+        box-sizing: border-box;
+        flex-shrink: 0;
+        min-height: 44px; /* Ensure touch target */
+        min-width: 44px; /* Ensure touch target */
       }
       .captcha-reload:hover {
         background: #444;
         transform: translateY(-2px);
       }
       .comment-submit {
-        width: 100%;
-        padding: min(2vw, 8px);
-        font-size: min(3vw, 12px); /* Scale font size */
-        min-height: 44px; /* Ensure touch target size */
+        background: #333;
+        border: none;
+        padding: min(0.5vw, 3px);
+        margin: 0 0 min(2vw, 8px) 0;
+        color: #999999;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: min(3.5vw, 14px); /* Scale font size */
+        font-weight: bold;
+        transition: background 0.3s ease, transform 0.2s ease;
+        height: min(6vw, 26px); /* Match other inputs */
+        line-height: normal;
+        min-height: 44px; /* Ensure touch target */
+        min-width: 44px; /* Ensure touch target */
+      }
+      .comment-submit:hover {
+        background: #444;
+        transform: translateY(-2px);
       }
       #view-count {
         left: min(2vw, 10px); /* Scale left position */
@@ -575,8 +652,8 @@
     <textarea class="comment-input" placeholder="Type your comment..." rows="3" maxlength="100"></textarea>
     <div class="captcha-container">
       <img class="captcha-image" alt="CAPTCHA image" />
-      <button type="button" class="captcha-reload" onclick="loadCaptcha()">reload</button>
       <input type="text" class="captcha-input" placeholder="solve" required autocomplete="off" maxlength="6" />
+      <button type="button" class="captcha-reload" onclick="loadCaptcha()">reload</button>
     </div>
     <button class="comment-submit" onclick="submitComment()">send</button>
     <div class="comments-list" id="commentsList"></div>
