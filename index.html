@@ -362,8 +362,8 @@
       color: #999999;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 10px; /* Reduced font size */
-      font-weight: 400; /* Unbolded */
+      font-size: 10px;
+      font-weight: 400;
       transition: all 0.3s ease;
       flex-shrink: 0;
       text-transform: uppercase;
@@ -820,12 +820,10 @@
   </audio>
   <script>
     console.log('Script loaded');
-
     let canvas, ctx, audioContext, analyser, dataArray, bufferLength;
     let stars = [];
     let animationId;
     let isVisualizerActive = false;
-
     const audio = document.getElementById('song');
     const volumeSlider = document.getElementById('volumeSlider');
     const volumeIcon = document.getElementById('volumeIcon');
@@ -847,7 +845,6 @@
     const commentsList = document.getElementById('commentsList');
     const newCommentIndicator = document.getElementById('newCommentIndicator');
     const reactionPicker = document.getElementById('reactionPicker');
-
     let captchaToken = '';
     const reservedUsers = ['mrpo', 'joehot', 'limit', 'moisesplays', 'melon', 'spaceyoda', 'nullbarral', 'cmrn'];
     let commentsCache = '';
@@ -856,18 +853,14 @@
     let lastCommentCount = 0;
     let realtimeInterval = null;
     let currentReactionTarget = null;
-
     const availableReactions = ['❤️', '😂', '👍', '😮', '😢', '🔥'];
-
     const NUM_STARS = 800;
     const STAR_SPEED_BASE = 0.5;
     const STAR_SPEED_MAX = 8;
     const BEAT_SENSITIVITY = 0.3;
-
     let bassHistory = [];
     let beatThreshold = 0.15;
     let lastBeatTime = 0;
-
     function initVisualizer() {
       console.log('Initializing visualizer');
       canvas = document.getElementById('visualizer');
@@ -888,7 +881,6 @@
       setupAudioAnalyser();
       console.log('Stars created:', stars.length);
     }
-
     function resizeCanvas() {
       if (canvas) {
         canvas.width = window.innerWidth;
@@ -896,7 +888,6 @@
         console.log('Canvas resized to:', canvas.width, 'x', canvas.height);
       }
     }
-
     function createStars() {
       stars = [];
       for (let i = 0; i < NUM_STARS; i++) {
@@ -909,7 +900,6 @@
         });
       }
     }
-
     function setupAudioAnalyser() {
       if (audio && !audioContext) {
         try {
@@ -927,7 +917,6 @@
         }
       }
     }
-
     function getAudioData() {
       if (analyser && audioContext && audioContext.state === 'running') {
         try {
@@ -941,7 +930,6 @@
       }
       return 0;
     }
-
     function animateStars() {
       if (!isVisualizerActive) return;
       let speedMultiplier = 1;
@@ -1016,7 +1004,6 @@
       }
       animationId = requestAnimationFrame(animateStars);
     }
-
     function startVisualizer() {
       console.log('Starting visualizer');
       if (!isVisualizerActive) {
@@ -1034,7 +1021,6 @@
         animateStars();
       }
     }
-
     function stopVisualizer() {
       if (isVisualizerActive) {
         isVisualizerActive = false;
@@ -1044,7 +1030,6 @@
         }
       }
     }
-
     function updateViewCount() {
       fetch('https://api.osumrpo.com/views')
         .then(response => response.json())
@@ -1056,7 +1041,6 @@
         })
         .catch(error => console.error('Error fetching view count:', error));
     }
-
     function copyDiscord() {
       navigator.clipboard.writeText("mrpo16").then(() => {
         showSuccess("discord copied");
@@ -1064,7 +1048,6 @@
         showError("Failed to copy discord");
       });
     }
-
     function showError(message) {
       copyPopup.textContent = message;
       copyPopup.classList.add('show');
@@ -1078,7 +1061,6 @@
         copyPopup.classList.remove('error');
       }, 3500);
     }
-
     function showSuccess(message) {
       copyPopup.textContent = message;
       copyPopup.classList.add('show');
@@ -1092,7 +1074,6 @@
         copyPopup.classList.remove('success');
       }, 3500);
     }
-
     function togglePasswordField() {
       const username = commentUsername.value.trim().toLowerCase();
       const isVisible = passwordInput.classList.contains('visible');
@@ -1108,7 +1089,6 @@
         }, 500);
       }
     }
-
     async function loadCaptcha() {
       try {
         const response = await fetch("https://api.osumrpo.com/captcha");
@@ -1131,7 +1111,6 @@
         showError(error.message || "Error loading CAPTCHA");
       }
     }
-
     async function fetchComments() {
       try {
         const response = await fetch(`https://api.osumrpo.com/comments?page=1&limit=100`);
@@ -1151,7 +1130,6 @@
         return { comments: [], totalPages: 1, currentPage: 1 };
       }
     }
-
     function showNewCommentIndicator() {
       if (newCommentIndicator) {
         newCommentIndicator.classList.add('show');
@@ -1160,7 +1138,6 @@
         }, 5000);
       }
     }
-
     async function addReaction(commentIndex, emoji) {
       const userId = localStorage.getItem('userId') || generateUserId();
       const reactionKey = `reaction_${commentIndex}_${userId}`;
@@ -1192,7 +1169,6 @@
         localStorage.setItem(reactionKey, emoji);
       }
     }
-
     async function removeReaction(commentIndex) {
       const userId = localStorage.getItem('userId') || generateUserId();
       const reactionKey = `reaction_${commentIndex}_${userId}`;
@@ -1219,13 +1195,11 @@
         updateReactionLocallyRemove(commentIndex);
       }
     }
-
     function generateUserId() {
       const userId = 'user_' + Math.random().toString(36).substr(2, 9);
       localStorage.setItem('userId', userId);
       return userId;
     }
-
     function updateReactionLocally(commentIndex, emoji) {
       const commentElement = document.querySelector(`[data-comment-index="${commentIndex}"]`);
       if (commentElement) {
@@ -1243,7 +1217,6 @@
         }
       }
     }
-
     function updateReactionLocallyRemove(commentIndex) {
       const commentElement = document.querySelector(`[data-comment-index="${commentIndex}"]`);
       if (commentElement) {
@@ -1265,7 +1238,6 @@
         }
       }
     }
-
     function createReactionButton(emoji, count, isActive = false, showRemove = false) {
       const button = document.createElement('div');
       button.className = `reaction-button ${isActive ? 'active' : ''}`;
@@ -1288,7 +1260,6 @@
       }
       return button;
     }
-
     function showReactionPicker(event, commentIndex) {
       event.preventDefault();
       event.stopPropagation();
@@ -1307,28 +1278,49 @@
         document.addEventListener('click', hideReactionPicker, { once: true });
       }, 100);
     }
-
     function hideReactionPicker() {
       reactionPicker.classList.remove('show');
       currentReactionTarget = null;
     }
-
     async function submitComment() {
-      const username = commentUsername.value.trim() || 'Anonymous';
+      const username = commentUsername.value.trim();
       const content = commentInput.value.trim();
       const password = passwordInput.value.trim();
       const captchaSolution = captchaInput.value.trim();
-      if (!content || !captchaSolution || content.length > 100 || username.length > 25) {
-        commentInput.value = "";
-        showError("Invalid message.");
+
+      // Separate validation checks for better error messages
+      if (!username) {
+        showError("Username is required.");
         return;
       }
+      if (username.length > 25) {
+        showError("Username too long (max 25 characters).");
+        return;
+      }
+      if (!content) {
+        showError("Comment message is required.");
+        commentInput.value = "";
+        return;
+      }
+      if (content.length > 100) {
+        showError("Comment too long (max 100 characters).");
+        commentInput.value = "";
+        return;
+      }
+      if (!captchaSolution) {
+        showError("CAPTCHA solution is required.");
+        return;
+      }
+
+      // Existing rate limit check
       const lastCommentTime = localStorage.getItem('lastCommentTime');
       const currentTime = Date.now();
       if (lastCommentTime && currentTime - lastCommentTime < 86400000) {
         showError("You can only post one comment per day.");
         return;
       }
+
+      // Proceed with submission
       try {
         const payload = { username, content, captchaSolution, captchaToken };
         if (reservedUsers.includes(username.toLowerCase()) && password) {
@@ -1367,7 +1359,6 @@
         await loadCaptcha();
       }
     }
-
     async function displayComments() {
       commentsList.innerHTML = '<div class="comment">Loading...</div>';
       try {
@@ -1450,7 +1441,6 @@
         showError("Failed to load comments.");
       }
     }
-
     document.addEventListener('DOMContentLoaded', () => {
       console.log('DOM loaded, initializing...');
       if (audio) {
@@ -1562,7 +1552,6 @@
       loadCaptcha();
       displayComments();
     });
-
     function startRealtimeUpdates() {
       realtimeInterval = setInterval(async () => {
         try {
@@ -1579,13 +1568,11 @@
         }
       }, 30000);
     }
-
     window.addEventListener('beforeunload', () => {
       if (realtimeInterval) {
         clearInterval(realtimeInterval);
       }
     });
-
     window.copyDiscord = copyDiscord;
   </script>
 </body>
