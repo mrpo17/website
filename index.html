@@ -372,9 +372,20 @@
     .comment-info {
       min-width: min(25vw, 100px); /* Scale width */
       display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+    }
+    .comment-user-line {
+      display: flex;
       flex-direction: row;
       align-items: center;
       gap: 5px;
+    }
+    .comment-timestamp {
+      font-size: min(2.5vw, 10px); /* Smaller font size */
+      color: #666666;
+      font-style: italic;
     }
     .comment-content {
       flex: 1;
@@ -931,7 +942,31 @@
           } else if (reservedUsers.includes(comment.username.toLowerCase())) {
             label = '<span class="comment-label">[friend]</span>';
           }
-          commentDiv.innerHTML = `<div class="comment-info"><strong class="${isReserved}">${comment.username}</strong> ${label}</div><div class="comment-content">${comment.content || comment.text}</div>`;
+          
+          // Format timestamp
+          const timestamp = comment.timestamp || comment.created_at || comment.date || new Date().toISOString();
+          const date = new Date(timestamp);
+          const formattedDate = date.toLocaleDateString('en-US', { 
+            month: 'short', 
+            day: 'numeric', 
+            year: 'numeric' 
+          });
+          const formattedTime = date.toLocaleTimeString('en-US', { 
+            hour: 'numeric', 
+            minute: '2-digit', 
+            hour12: true 
+          });
+          
+          commentDiv.innerHTML = `
+            <div class="comment-info">
+              <div class="comment-user-line">
+                <strong class="${isReserved}">${comment.username}</strong> 
+                ${label}
+              </div>
+              <div class="comment-timestamp">${formattedDate} at ${formattedTime}</div>
+            </div>
+            <div class="comment-content">${comment.content || comment.text}</div>
+          `;
           commentsList.appendChild(commentDiv);
         });
       } catch (error) {
