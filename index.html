@@ -918,7 +918,7 @@
        
         if (x >= 0 && x <= canvas.width && y >= 0 && y <= canvas.height && opacity > 0) {
           // Draw nice trails but they fade away quickly
-          ctx.strokeStyle = `rgba(100, 150, 255, ${opacity * 0.4})`;
+          ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.4})`;
           ctx.lineWidth = size * 0.5;
           ctx.beginPath();
           ctx.moveTo(star.prevX, star.prevY);
@@ -926,14 +926,14 @@
           ctx.stroke();
          
           // Draw stars
-          ctx.fillStyle = `rgba(150, 200, 255, ${opacity})`;
+          ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
           ctx.beginPath();
           ctx.arc(x, y, size, 0, Math.PI * 2);
           ctx.fill();
          
           // Glow effect during beat bursts
           if (speedMultiplier > 15 && size > 1) {
-            ctx.shadowColor = '#4da6ff';
+            ctx.shadowColor = '#ffffff';
             ctx.shadowBlur = size * 4;
             ctx.beginPath();
             ctx.arc(x, y, size * 0.8, 0, Math.PI * 2);
