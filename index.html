@@ -877,7 +877,7 @@
     let lastCommentCount = 0;
     let realtimeInterval = null;
     let currentReactionTarget = null;
-    const availableReactions = ['❤️', '😂', '👍', '😮', '😢', '🔥'];
+    const availableReactions = ['❤️', '💀', '😭', '🔥', '👍', '😐'];
     const NUM_STARS = 800;
     const STAR_SPEED_BASE = 0.5;
     const STAR_SPEED_MAX = 8;
@@ -1069,34 +1069,70 @@
       navigator.clipboard.writeText("mrpo16").then(() => {
         showSuccess("discord copied");
       }).catch(() => {
-        showError("Failed to copy discord");
+        showError("Failed to copy");
       });
     }
+    let popupTimeout = null;
+    let popupHideTimeout = null;
+
     function showError(message) {
-      copyPopup.textContent = message;
-      copyPopup.classList.add('show');
-      copyPopup.classList.add('error');
+      // Clear any existing timeouts
+      if (popupTimeout) clearTimeout(popupTimeout);
+      if (popupHideTimeout) clearTimeout(popupHideTimeout);
+      
+      // Reset popup state
+      copyPopup.classList.remove('show', 'success', 'error');
       copyPopup.style.display = 'block';
+      
+      // Force reflow to ensure class removal takes effect
+      copyPopup.offsetHeight;
+      
+      copyPopup.textContent = message;
+      copyPopup.classList.add('error');
+      
+      // Small delay to ensure smooth animation
       setTimeout(() => {
+        copyPopup.classList.add('show');
+      }, 10);
+      
+      popupTimeout = setTimeout(() => {
         copyPopup.classList.remove('show');
-      }, 3000);
-      setTimeout(() => {
+      }, 2500);
+      
+      popupHideTimeout = setTimeout(() => {
         copyPopup.style.display = 'none';
         copyPopup.classList.remove('error');
-      }, 3500);
+      }, 2900);
     }
+    
     function showSuccess(message) {
-      copyPopup.textContent = message;
-      copyPopup.classList.add('show');
-      copyPopup.classList.add('success');
+      // Clear any existing timeouts
+      if (popupTimeout) clearTimeout(popupTimeout);
+      if (popupHideTimeout) clearTimeout(popupHideTimeout);
+      
+      // Reset popup state
+      copyPopup.classList.remove('show', 'success', 'error');
       copyPopup.style.display = 'block';
+      
+      // Force reflow to ensure class removal takes effect
+      copyPopup.offsetHeight;
+      
+      copyPopup.textContent = message;
+      copyPopup.classList.add('success');
+      
+      // Small delay to ensure smooth animation
       setTimeout(() => {
+        copyPopup.classList.add('show');
+      }, 10);
+      
+      popupTimeout = setTimeout(() => {
         copyPopup.classList.remove('show');
-      }, 3000);
-      setTimeout(() => {
+      }, 2500);
+      
+      popupHideTimeout = setTimeout(() => {
         copyPopup.style.display = 'none';
         copyPopup.classList.remove('success');
-      }, 3500);
+      }, 2900);
     }
     function togglePasswordField() {
       const username = commentUsername.value.trim().toLowerCase();
