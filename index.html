@@ -663,8 +663,8 @@
     <textarea class="comment-input" placeholder="Type your comment..." rows="3" maxlength="100"></textarea>
     <div class="captcha-container">
       <img class="captcha-image" alt="CAPTCHA image" />
-      <input type="text" class="captcha-input" placeholder="solve" required autocomplete="off" maxlength="6" />
       <button type="button" class="captcha-reload" onclick="loadCaptcha()">reload</button>
+      <input type="text" class="captcha-input" placeholder="solve" required autocomplete="off" maxlength="6" />
     </div>
     <button class="comment-submit" onclick="submitComment()">send</button>
     <div class="comments-list" id="commentsList"></div>
@@ -943,15 +943,22 @@
             label = '<span class="comment-label">[friend]</span>';
           }
           
-          // Format timestamp
+          // Format timestamp in viewer's local timezone
           const timestamp = comment.timestamp || comment.created_at || comment.date || new Date().toISOString();
           const date = new Date(timestamp);
-          const formattedDate = date.toLocaleDateString('en-US', { 
+          
+          // Check if date is valid
+          if (isNaN(date.getTime())) {
+            date = new Date(); // Fallback to current time
+          }
+          
+          // Format date and time in viewer's local timezone and locale
+          const formattedDate = date.toLocaleDateString(undefined, { 
             month: 'short', 
             day: 'numeric', 
             year: 'numeric' 
           });
-          const formattedTime = date.toLocaleTimeString('en-US', { 
+          const formattedTime = date.toLocaleTimeString(undefined, { 
             hour: 'numeric', 
             minute: '2-digit', 
             hour12: true 
