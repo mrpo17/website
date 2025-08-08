@@ -29,6 +29,121 @@
       display: flex;
       flex-direction: column;
     }
+    
+    body.loading {
+      cursor: default;
+    }
+    
+    body.loading #overlay {
+      cursor: pointer;
+    }
+    
+    body.fading-out {
+      cursor: none;
+    }
+    
+    body:not(.loading) {
+      cursor: none !important;
+    }
+    
+    body:not(.loading) * {
+      cursor: none !important;
+    }
+    
+    /* Custom Cursor Styles */
+    .custom-cursor {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: #ffffff;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      transition: opacity 1.5s ease-out;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      will-change: transform, opacity;
+      visibility: hidden;
+    }
+    
+    .custom-cursor.active {
+      visibility: visible;
+    }
+    
+    .custom-cursor.fade-in {
+      opacity: 1;
+    }
+    
+    .custom-cursor::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 24px;
+      height: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .custom-cursor.hover {
+      transform: translate(-50%, -50%) scale(0.6);
+    }
+    
+    .custom-cursor.hover::after {
+      width: 16px;
+      height: 16px;
+      border-color: rgba(255, 255, 255, 0.8);
+      border-width: 2px;
+    }
+    
+    .custom-cursor.click {
+      transform: translate(-50%, -50%) scale(0.4);
+    }
+    
+    .custom-cursor.click::after {
+      width: 12px;
+      height: 12px;
+      border-color: #ffffff;
+      border-width: 2px;
+    }
+    
+    .custom-cursor.text {
+      width: 2px;
+      height: 20px;
+      border-radius: 1px;
+      background: #ffffff;
+    }
+    
+    .custom-cursor.text::after {
+      display: none;
+    }
+    
+    /* Cursor Trail */
+    .cursor-trail {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99998;
+      transform: translate(-50%, -50%);
+      transition: opacity 1.5s ease-out;
+      will-change: transform, opacity;
+      opacity: 0;
+      visibility: hidden;
+    }
+    
+    .cursor-trail.active {
+      visibility: visible;
+    }
+    
+    .cursor-trail.fade-in {
+      opacity: var(--trail-opacity);
+    }
+    
     #visualizer {
       position: fixed;
       top: 0;
@@ -76,7 +191,6 @@
     .volume-controls .fa-volume-up {
       color: #888888;
       font-size: min(4vw, 14px);
-      cursor: pointer;
     }
     #volumeSlider {
       width: min(20vw, 100px);
@@ -86,7 +200,6 @@
       outline: none;
       appearance: none;
       transition: opacity 1.5s ease-out;
-      cursor: pointer;
       z-index: 20;
     }
     #volumeSlider::-webkit-slider-thumb {
@@ -95,7 +208,6 @@
       height: 10px;
       background: #444;
       border-radius: 50%;
-      cursor: pointer;
       border: none;
     }
     #volumeSlider::-moz-range-thumb {
@@ -103,7 +215,6 @@
       height: 10px;
       background: #444;
       border-radius: 50%;
-      cursor: pointer;
       border: none;
     }
     #volumeSlider::-moz-range-track {
@@ -198,8 +309,8 @@
       letter-spacing: 1px;
       opacity: 1;
       transition: opacity 1.5s ease-out;
-      cursor: pointer;
       pointer-events: auto;
+      cursor: pointer;
     }
     #overlay.fade-out {
       opacity: 0;
@@ -369,7 +480,6 @@
       margin: 0;
       color: #999999;
       border-radius: 8px;
-      cursor: pointer;
       font-size: 10px;
       font-weight: 400;
       transition: all 0.3s ease;
@@ -390,7 +500,6 @@
       padding: 12px 20px;
       color: #999999;
       border-radius: 8px;
-      cursor: pointer;
       font-size: 14px;
       font-weight: 600;
       transition: all 0.3s ease;
@@ -458,7 +567,6 @@
       display: flex;
       align-items: center;
       gap: 4px;
-      cursor: pointer;
       transition: all 0.2s ease;
       font-size: 12px;
       color: #999999;
@@ -499,7 +607,6 @@
       transform: none;
       box-shadow: none;
       transition: all 0.2s ease;
-      cursor: pointer;
     }
     .reaction-button:hover .remove-reaction {
       opacity: 1;
@@ -516,7 +623,6 @@
       border: 1px solid rgba(60, 60, 60, 0.3);
       border-radius: 15px;
       padding: 4px 8px;
-      cursor: pointer;
       transition: all 0.2s ease;
       font-size: 14px;
       color: #666666;
@@ -552,7 +658,6 @@
     .reaction-picker-emoji {
       padding: 6px;
       border-radius: 12px;
-      cursor: pointer;
       transition: all 0.15s ease;
       font-size: 18px;
       line-height: 1;
@@ -563,7 +668,6 @@
     }
     .reaction-picker-emoji.disabled {
       opacity: 0.5;
-      cursor: not-allowed;
       transform: none;
     }
     .new-comment-indicator {
@@ -576,7 +680,6 @@
       border-radius: 20px;
       font-size: 12px;
       font-weight: 500;
-      cursor: pointer;
       transform: translateY(-100px);
       transition: all 0.3s ease;
       z-index: 1000;
@@ -703,7 +806,13 @@
     .view-counter i {
       font-size: 18px;
     }
-    @media (max-width: 768px) {
+          @media (max-width: 768px) {
+      .custom-cursor, .cursor-trail {
+        display: none !important;
+      }
+      * {
+        cursor: auto !important;
+      }
       body {
         display: flex;
         flex-direction: column;
@@ -711,6 +820,7 @@
         height: auto;
         overflow-x: hidden;
         min-height: 100vh;
+        cursor: auto !important;
       }
       .container {
         width: 100%;
@@ -778,7 +888,8 @@
     }
   </style>
 </head>
-<body>
+  <body class="loading">
+  <div class="custom-cursor"></div>
   <canvas id="visualizer"></canvas>
   <div id="overlay">click me</div>
   <div class="top-controls">
@@ -885,6 +996,185 @@
     let bassHistory = [];
     let beatThreshold = 0.15;
     let lastBeatTime = 0;
+    
+    // Custom cursor variables
+    const cursor = document.querySelector('.custom-cursor');
+    let mouseX = 0;
+    let mouseY = 0;
+    let cursorX = 0;
+    let cursorY = 0;
+    let trailElements = [];
+    const trailLength = 8;
+    
+    // Custom cursor functionality
+    function initCustomCursor() {
+      if (window.innerWidth <= 768) return; // Disable on mobile
+      
+      // Create trail elements
+      for (let i = 0; i < trailLength; i++) {
+        const trail = document.createElement('div');
+        trail.className = 'cursor-trail';
+        trail.style.setProperty('--trail-opacity', (1 - i / trailLength) * 0.3);
+        document.body.appendChild(trail);
+        trailElements.push({
+          element: trail,
+          x: 0,
+          y: 0
+        });
+      }
+      
+      let rafId;
+      let trailPositions = [];
+      
+      // Track mouse movement with requestAnimationFrame for smooth performance
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        
+        if (rafId) cancelAnimationFrame(rafId);
+        
+        rafId = requestAnimationFrame(() => {
+          // Update main cursor
+          cursor.style.left = mouseX + 'px';
+          cursor.style.top = mouseY + 'px';
+          
+          // Add current position to trail
+          trailPositions.unshift({ x: mouseX, y: mouseY });
+          if (trailPositions.length > trailLength) {
+            trailPositions.pop();
+          }
+          
+          // Update trail elements
+          trailElements.forEach((trail, index) => {
+            if (trailPositions[index + 3]) { // Offset for smoother trail
+              trail.element.style.left = trailPositions[index + 3].x + 'px';
+              trail.element.style.top = trailPositions[index + 3].y + 'px';
+            }
+          });
+        });
+      });
+      
+      // Show cursor when mouse enters window
+      document.addEventListener('mouseenter', () => {
+        if (!document.body.classList.contains('loading') && !document.body.classList.contains('fading-out')) {
+          cursor.classList.add('active');
+          cursor.classList.add('fade-in');
+          trailElements.forEach((trail, index) => {
+            trail.element.classList.add('active');
+            trail.element.classList.add('fade-in');
+          });
+        }
+      });
+      
+      // Hide cursor when mouse leaves window
+      document.addEventListener('mouseleave', () => {
+        cursor.classList.remove('fade-in');
+        trailElements.forEach(trail => {
+          trail.element.classList.remove('fade-in');
+        });
+      });
+      
+      // Add hover effects to all clickable elements
+      const clickableElements = [
+        '#overlay',
+        '.links a',
+        '#volumeIcon',
+        '#volumeSlider',
+        '.comment-submit',
+        '.captcha-reload',
+        '.reaction-button',
+        '.add-reaction-button',
+        '.reaction-picker-emoji',
+        '.new-comment-indicator',
+        '.remove-reaction'
+      ];
+      
+      clickableElements.forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(element => {
+          element.addEventListener('mouseenter', () => {
+            cursor.classList.add('hover');
+          });
+          element.addEventListener('mouseleave', () => {
+            cursor.classList.remove('hover');
+          });
+          element.addEventListener('mousedown', () => {
+            cursor.classList.add('click');
+          });
+          element.addEventListener('mouseup', () => {
+            cursor.classList.remove('click');
+          });
+        });
+      });
+      
+      // Add text cursor for input fields
+      const inputElements = [
+        '.comment-username',
+        '.password-input',
+        '.comment-input',
+        '.captcha-input'
+      ];
+      
+      inputElements.forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(element => {
+          element.addEventListener('mouseenter', () => {
+            cursor.classList.add('text');
+          });
+          element.addEventListener('mouseleave', () => {
+            cursor.classList.remove('text');
+          });
+        });
+      });
+      
+      // Add disabled cursor for disabled elements
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === 1) { // Element node
+              // Check for reaction buttons
+              const reactionButtons = node.querySelectorAll ? node.querySelectorAll('.reaction-button') : [];
+              reactionButtons.forEach(btn => {
+                btn.addEventListener('mouseenter', () => {
+                  cursor.classList.add('hover');
+                });
+                btn.addEventListener('mouseleave', () => {
+                  cursor.classList.remove('hover');
+                });
+              });
+              
+              // Check for add reaction buttons
+              const addButtons = node.querySelectorAll ? node.querySelectorAll('.add-reaction-button') : [];
+              addButtons.forEach(btn => {
+                btn.addEventListener('mouseenter', () => {
+                  cursor.classList.add('hover');
+                });
+                btn.addEventListener('mouseleave', () => {
+                  cursor.classList.remove('hover');
+                });
+              });
+              
+              // Check for remove reaction buttons
+              const removeButtons = node.querySelectorAll ? node.querySelectorAll('.remove-reaction') : [];
+              removeButtons.forEach(btn => {
+                btn.addEventListener('mouseenter', () => {
+                  cursor.classList.add('hover');
+                });
+                btn.addEventListener('mouseleave', () => {
+                  cursor.classList.remove('hover');
+                });
+              });
+            }
+          });
+        });
+      });
+      
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    }
+    
     function initVisualizer() {
       console.log('Initializing visualizer');
       canvas = document.getElementById('visualizer');
@@ -1305,6 +1595,23 @@
         <span class="reaction-count">${count}</span>
         ${showRemove ? '<span class="remove-reaction">×</span>' : ''}
       `;
+      
+      // Add cursor hover effects for dynamically created elements
+      if (window.innerWidth > 768) {
+        button.addEventListener('mouseenter', () => {
+          cursor.classList.add('hover');
+        });
+        button.addEventListener('mouseleave', () => {
+          cursor.classList.remove('hover');
+        });
+        button.addEventListener('mousedown', () => {
+          cursor.classList.add('click');
+        });
+        button.addEventListener('mouseup', () => {
+          cursor.classList.remove('click');
+        });
+      }
+      
       button.querySelector('.reaction-emoji').addEventListener('click', () => {
         const commentIndex = button.closest('.comment').dataset.commentIndex;
         addReaction(commentIndex, emoji);
@@ -1315,6 +1622,16 @@
           const commentIndex = button.closest('.comment').dataset.commentIndex;
           removeReaction(commentIndex);
         });
+        
+        // Add cursor effects to remove button
+        if (window.innerWidth > 768) {
+          removeBtn.addEventListener('mouseenter', () => {
+            cursor.classList.add('hover');
+          });
+          removeBtn.addEventListener('mouseleave', () => {
+            cursor.classList.remove('hover');
+          });
+        }
       }
       return button;
     }
@@ -1480,6 +1797,17 @@
           addReactionBtn.addEventListener('click', (e) => {
             showReactionPicker(e, comment.index);
           });
+          
+          // Add cursor effects to dynamically created elements
+          if (window.innerWidth > 768) {
+            addReactionBtn.addEventListener('mouseenter', () => {
+              cursor.classList.add('hover');
+            });
+            addReactionBtn.addEventListener('mouseleave', () => {
+              cursor.classList.remove('hover');
+            });
+          }
+          
           commentDiv.querySelectorAll('.reaction-button').forEach(btn => {
             const emojiSpan = btn.querySelector('.reaction-emoji');
             emojiSpan.addEventListener('click', () => {
@@ -1489,6 +1817,26 @@
             if (removeBtn) {
               removeBtn.addEventListener('click', () => {
                 removeReaction(comment.index);
+              });
+              
+              // Add cursor effects
+              if (window.innerWidth > 768) {
+                removeBtn.addEventListener('mouseenter', () => {
+                  cursor.classList.add('hover');
+                });
+                removeBtn.addEventListener('mouseleave', () => {
+                  cursor.classList.remove('hover');
+                });
+              }
+            }
+            
+            // Add cursor effects to reaction buttons
+            if (window.innerWidth > 768) {
+              btn.addEventListener('mouseenter', () => {
+                cursor.classList.add('hover');
+              });
+              btn.addEventListener('mouseleave', () => {
+                cursor.classList.remove('hover');
               });
             }
           });
@@ -1501,6 +1849,10 @@
     }
     document.addEventListener('DOMContentLoaded', () => {
       console.log('DOM loaded, initializing...');
+      
+      // Initialize custom cursor
+      initCustomCursor();
+      
       if (audio) {
         audio.volume = 0.15;
         audio.muted = false;
@@ -1542,6 +1894,18 @@
       if (overlay) {
         overlay.addEventListener('click', () => {
           console.log('Overlay clicked!');
+          
+          // Start fading out default cursor immediately
+          document.body.classList.add('fading-out');
+          
+          // Prepare custom cursor (make it ready but invisible)
+          if (window.innerWidth > 768) {
+            cursor.classList.add('active');
+            trailElements.forEach((trail, index) => {
+              trail.element.classList.add('active');
+            });
+          }
+          
           overlay.classList.add('fade-out');
           setTimeout(() => {
             overlay.style.display = 'none';
@@ -1551,6 +1915,16 @@
             username.classList.add('fade-in');
             linksContainer.classList.add('fade-in');
             commentSection.classList.add('visible');
+            
+            // Start fading in custom cursor with the content
+            document.body.classList.remove('loading');
+            if (window.innerWidth > 768) {
+              cursor.classList.add('fade-in');
+              trailElements.forEach((trail, index) => {
+                trail.element.classList.add('fade-in');
+              });
+            }
+            
             if (!viewCountElement && window.innerWidth > 768) {
               viewCountElement = document.createElement('div');
               viewCountElement.className = 'view-counter';
@@ -1558,6 +1932,11 @@
               updateViewCount();
             }
             startRealtimeUpdates();
+            
+            // Remove fading-out class after transition completes
+            setTimeout(() => {
+              document.body.classList.remove('fading-out');
+            }, 1500);
           }, 1500);
           setTimeout(() => {
             console.log('Attempting to play audio...');
