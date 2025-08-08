@@ -50,11 +50,11 @@
       cursor: none !important;
     }
     
-    /* Custom Cursor Styles */
+    /* Enhanced Custom Cursor Styles */
     .custom-cursor {
       position: fixed;
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       background: #ffffff;
       border-radius: 50%;
       pointer-events: none;
@@ -64,6 +64,8 @@
       opacity: 0;
       will-change: transform, opacity;
       visibility: hidden;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.6),
+                  0 0 25px rgba(255, 255, 255, 0.3);
     }
     
     .custom-cursor.active {
@@ -79,32 +81,36 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 24px;
-      height: 24px;
-      border: 1px solid rgba(255, 255, 255, 0.4);
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
       border-radius: 50%;
       transform: translate(-50%, -50%);
       transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     
     .custom-cursor.hover {
-      transform: translate(-50%, -50%) scale(0.6);
+      transform: translate(-50%, -50%) scale(0.7);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+                  0 0 35px rgba(255, 255, 255, 0.4);
     }
     
     .custom-cursor.hover::after {
-      width: 16px;
-      height: 16px;
-      border-color: rgba(255, 255, 255, 0.8);
+      width: 20px;
+      height: 20px;
+      border-color: rgba(255, 255, 255, 0.9);
       border-width: 2px;
     }
     
     .custom-cursor.click {
-      transform: translate(-50%, -50%) scale(0.4);
+      transform: translate(-50%, -50%) scale(0.5);
+      box-shadow: 0 0 25px rgba(255, 255, 255, 1),
+                  0 0 40px rgba(255, 255, 255, 0.6);
     }
     
     .custom-cursor.click::after {
-      width: 12px;
-      height: 12px;
+      width: 16px;
+      height: 16px;
       border-color: #ffffff;
       border-width: 2px;
     }
@@ -114,18 +120,19 @@
       height: 20px;
       border-radius: 1px;
       background: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
     }
     
     .custom-cursor.text::after {
       display: none;
     }
     
-    /* Cursor Trail */
+    /* Enhanced Cursor Trail */
     .cursor-trail {
       position: fixed;
-      width: 4px;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.6);
+      width: 6px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.9);
       border-radius: 50%;
       pointer-events: none;
       z-index: 99998;
@@ -134,6 +141,8 @@
       will-change: transform, opacity;
       opacity: 0;
       visibility: hidden;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.6),
+                  0 0 20px rgba(255, 255, 255, 0.3);
     }
     
     .cursor-trail.active {
@@ -717,28 +726,72 @@
       line-height: 1.5;
       word-break: break-word;
     }
+    
+    /* Enhanced Creator and Friend Tag Colors */
     .comment-label {
-      font-size: 8px;
+      font-size: 7px;
       padding: 2px 6px;
-      border-radius: 8px;
+      border-radius: 6px;
       font-weight: 500;
       text-transform: uppercase;
       letter-spacing: 0.3px;
-      animation: rainbow 6s infinite linear;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid currentColor;
+      border: 1px solid transparent;
+      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
     }
+    
+    .comment-label.creator {
+      background: linear-gradient(135deg, #9d4edd, #c77dff);
+      color: #ffffff;
+      border-color: #9d4edd;
+      animation: creator-pulse 3s ease-in-out infinite;
+    }
+    
+    .comment-label.friend {
+      background: linear-gradient(135deg, #06ffa5, #00d4aa);
+      color: #000000;
+      border-color: #06ffa5;
+      animation: friend-glow 4s ease-in-out infinite;
+    }
+    
     .reserved-user {
       color: #888888;
       font-weight: 600;
       font-size: 15px;
     }
     .creator-user {
-      color: #bb86fc;
+      color: #c77dff;
       font-weight: 600;
       font-size: 15px;
-      text-shadow: 0 0 8px rgba(187, 134, 252, 0.3);
+      text-shadow: 0 0 8px rgba(199, 125, 255, 0.4);
     }
+    
+    @keyframes creator-pulse {
+      0%, 100% { 
+        box-shadow: 0 2px 6px rgba(157, 78, 221, 0.3),
+                    0 0 12px rgba(157, 78, 221, 0.2);
+        transform: scale(1);
+      }
+      50% { 
+        box-shadow: 0 4px 12px rgba(157, 78, 221, 0.5),
+                    0 0 20px rgba(157, 78, 221, 0.3);
+        transform: scale(1.02);
+      }
+    }
+    
+    @keyframes friend-glow {
+      0%, 100% { 
+        box-shadow: 0 2px 6px rgba(6, 255, 165, 0.3),
+                    0 0 12px rgba(6, 255, 165, 0.2);
+        transform: scale(1);
+      }
+      50% { 
+        box-shadow: 0 4px 12px rgba(6, 255, 165, 0.5),
+                    0 0 20px rgba(6, 255, 165, 0.3);
+        transform: scale(1.02);
+      }
+    }
+    
     @keyframes rainbow {
       0% { color: red; }
       16.67% { color: orange; }
@@ -997,24 +1050,25 @@
     let beatThreshold = 0.15;
     let lastBeatTime = 0;
     
-    // Custom cursor variables
+    // Enhanced custom cursor variables
     const cursor = document.querySelector('.custom-cursor');
     let mouseX = 0;
     let mouseY = 0;
     let cursorX = 0;
     let cursorY = 0;
     let trailElements = [];
-    const trailLength = 8;
+    const trailLength = 12; // Increased trail length
     
-    // Custom cursor functionality
+    // Enhanced custom cursor functionality
     function initCustomCursor() {
       if (window.innerWidth <= 768) return; // Disable on mobile
       
-      // Create trail elements
+      // Create enhanced trail elements
       for (let i = 0; i < trailLength; i++) {
         const trail = document.createElement('div');
         trail.className = 'cursor-trail';
-        trail.style.setProperty('--trail-opacity', (1 - i / trailLength) * 0.3);
+        // Enhanced opacity calculation for more visible trail
+        trail.style.setProperty('--trail-opacity', (1 - i / trailLength) * 0.8);
         document.body.appendChild(trail);
         trailElements.push({
           element: trail,
@@ -1026,7 +1080,7 @@
       let rafId;
       let trailPositions = [];
       
-      // Track mouse movement with requestAnimationFrame for smooth performance
+      // Track mouse movement with enhanced performance
       document.addEventListener('mousemove', (e) => {
         mouseX = e.clientX;
         mouseY = e.clientY;
@@ -1038,17 +1092,18 @@
           cursor.style.left = mouseX + 'px';
           cursor.style.top = mouseY + 'px';
           
-          // Add current position to trail
+          // Add current position to trail with enhanced spacing
           trailPositions.unshift({ x: mouseX, y: mouseY });
-          if (trailPositions.length > trailLength) {
+          if (trailPositions.length > trailLength * 2) {
             trailPositions.pop();
           }
           
-          // Update trail elements
+          // Update trail elements with improved spacing
           trailElements.forEach((trail, index) => {
-            if (trailPositions[index + 3]) { // Offset for smoother trail
-              trail.element.style.left = trailPositions[index + 3].x + 'px';
-              trail.element.style.top = trailPositions[index + 3].y + 'px';
+            const positionIndex = (index + 1) * 2; // Better spacing between trail elements
+            if (trailPositions[positionIndex]) {
+              trail.element.style.left = trailPositions[positionIndex].x + 'px';
+              trail.element.style.top = trailPositions[positionIndex].y + 'px';
             }
           });
         });
@@ -1751,9 +1806,9 @@
           const userClass = isCreator ? 'creator-user' : (isReserved ? 'reserved-user' : '');
           let label = '';
           if (isCreator) {
-            label = '<span class="comment-label">creator</span>';
+            label = '<span class="comment-label creator">creator</span>';
           } else if (isReserved) {
-            label = '<span class="comment-label">friend</span>';
+            label = '<span class="comment-label friend">friend</span>';
           }
           const timestamp = comment.timestamp || new Date().toISOString();
           const date = new Date(timestamp);
